@@ -5,6 +5,7 @@ import argparse
 
 import modules.data as data
 
+
 class SinglePulseAnalysis:
 
     def __init__(self, data_dir):
@@ -16,14 +17,13 @@ class SinglePulseAnalysis:
 
         self.types = {'westerbork': data.load_westerbork, 'westerbork4': data.load_westerbork4}
 
-    def load(self, file_name,  type='westerbork4'):
+    def load(self, file_name, end=None, bin_num=None, type='westerbork4'):
         try:
             fun = self.types[type]
         except:
             print 'Loading function not implemented.\nExiting...'
             exit()
-
-        fun(self, file_name)
+        fun(self, file_name, end=end, bin_num=bin_num)
 
 
 

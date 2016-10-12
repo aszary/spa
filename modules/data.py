@@ -3,11 +3,11 @@ import os
 import numpy as np
 
 
-def load_westerbork(spa, file_name, end=None, bin_=None, extra_=True):
+def load_westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
     """
     :param file_name: file to read
     :param end: number pulses to read
-    :param bin_: number of bins
+    :param bin_num: number of bins
     :return:
     """
 
@@ -29,9 +29,9 @@ def load_westerbork(spa, file_name, end=None, bin_=None, extra_=True):
         spa.period = float(res4[4])
         mjd_start = float(res4[5])
 
-        if bin_ is not None:
-            print "Warning! Bin number changed from %d to %d" % (bins, bin_)
-            bins = bin_
+        if bin_num is not None:
+            print "Warning! Bin number changed from %d to %d" % (bins, bin_num)
+            bins = bin_num
 
         print file_name
         print 'obs: ', obs
@@ -98,12 +98,12 @@ def load_westerbork(spa, file_name, end=None, bin_=None, extra_=True):
     f.close()
 
 
-def load_westerbork4(spa, file_name, end=None, bin_=None):
+def load_westerbork4(spa, file_name, end=None, bin_num=None):
     """
     All 4 Stokes parameters
     :param file_name: file to read
     :param end: number pulses to read
-    :param bin_: number of bins
+    :param bin_num: number of bins
     :return:
     """
 
@@ -125,9 +125,9 @@ def load_westerbork4(spa, file_name, end=None, bin_=None):
         period = float(res4[4])
         mjd_start = float(res4[5])
 
-        if bin_ is not None:
-            print "Warning! Bin number changed from %d to %d" % (bins, bin_)
-            bins = bin_
+        if bin_num is not None:
+            print "Warning! Bin number changed from %d to %d" % (bins, bin_num)
+            bins = bin_num
 
         print file_name
         print 'obs: ', obs
