@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 
-def load_westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
+def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
     """
     :param file_name: file to read
     :param end: number pulses to read
@@ -98,7 +98,7 @@ def load_westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
     f.close()
 
 
-def load_westerbork4(spa, file_name, end=None, bin_num=None):
+def westerbork4(spa, file_name, end=None, bin_num=None):
     """
     All 4 Stokes parameters
     :param file_name: file to read

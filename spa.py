@@ -3,7 +3,7 @@ __author__ = 'Andrzej Szary'  # peakutils by Lucas Hermann Negri
 import glob
 import argparse
 
-import modules.data as data
+import modules.load as load
 
 
 class SinglePulseAnalysis:
@@ -15,7 +15,7 @@ class SinglePulseAnalysis:
         self.off_rms_ = None
         self.base = None
 
-        self.types = {'westerbork': data.load_westerbork, 'westerbork4': data.load_westerbork4}
+        self.types = {'westerbork': load.westerbork, 'westerbork4': load.westerbork4}
 
     def load(self, file_name, end=None, bin_num=None, type='westerbork4'):
         try:
