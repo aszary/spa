@@ -4,12 +4,14 @@ import glob
 import argparse
 
 import modules.load as load
+import modules.plot as plot
 
 
 class SinglePulseAnalysis:
 
-    def __init__(self, data_dir):
+    def __init__(self, data_dir, output_dir='output'):
         self.data_dir = data_dir
+        self.output_dir = output_dir
 
         self.stokes_ = None
         self.off_rms_ = None
@@ -25,11 +27,14 @@ class SinglePulseAnalysis:
             exit()
         fun(self, file_name, end=end, bin_num=bin_num)
 
+    def plot(self):
+        plot.average(self)
 
 
 def main():
     s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
     s.load('sJ0815+0939.54015ap', type='westerbork4')
+    s.plot()
     print "Bye"
 
 
