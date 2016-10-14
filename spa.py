@@ -29,6 +29,8 @@ class SinglePulseAnalysis:
 
     def plot(self):
         plot.average(self)
+        plot.single_old(self)
+        plot.single(self)
 
 
 def main():
