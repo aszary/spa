@@ -271,7 +271,6 @@ def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None,
     :return:
     """
 
-
     if length is None:
         length = len(spa.stokes_[0])
     single_ = spa.stokes_[0][start:start+length][:]
@@ -372,4 +371,103 @@ def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None,
     if show is True:
         pl.show()
     pl.close()
+
+
+def p3_evolution(spa, length=256, start=0, end=None, step=10, ph_st=None, ph_end=None, cmap="inferno", show=True):
+    """
+    P3 evolution with time
+    :param spa: SinglePulseAnalysis class
+    :param length: number of pulses to use in lrfs
+    :param start: first pulse
+    :param end: last pulse
+    :param step: get new p3 every X pulses
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if end is None:
+        end = len(spa.stokes_[0])
+
+    freqs_ = []
+    p3_ = []
+    p3_err_ = []
+    p3_pulse_ = []
+
+    for i in xrange(start, end-length, step):
+        single_ = spa.stokes_[0][i:i+length][:]
+        if ph_st is not None:
+            old_len = float(len(single_[0]))
+            ns_ = np.zeros([len(single_), ph_end-ph_st])
+            for j in xrange(len(single_)):
+                ns_[j] = single_[j][ph_st:ph_end]
+            single_ = ns_
+
+        lrfs_, freq_ = fun.lrfs(single_, None)
+        counts_, pulses_ = fun.counts(np.abs(lrfs_))
+        try:
+            # new approach
+            p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_)
+            p3_.append(p3)
+            p3_err_.append(p3_err)
+            p3_pulse_.append(i)
+        except IndexError:
+            pass
+        except ValueError:
+            #print counts_
+            #exit()
+            pass
+        freqs_.append(counts_)
+
+    average_ = fun.average_profile(freqs_)
+
+    grey = '#737373'
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.17, bottom=0.08, right=0.99, top=0.99, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 3), (0, 0), rowspan=3)
+    pl.minorticks_on()
+    pl.locator_params(axis='x', nbins=4)
+    #pl.plot(p3_, p3_pulse_, c=grey)
+    pl.errorbar(p3_, p3_pulse_, xerr=p3_err_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
+    pl.ylim(p3_pulse_[0], p3_pulse_[-1])
+    #pl.locator_params(nbins=3)
+    pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
+    #pl.xticks([15, 17, 19])
+    pl.ylabel('start period no.')
+    pl.xlabel('$P_3$')
+
+    ax = pl.subplot2grid((4, 3), (0, 1), rowspan=3, colspan=2)
+    pl.imshow(freqs_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto')  # , vmax=700.5)
+    pl.xticks([], [])
+    #pl.grid(color="white")
+    #pl.axvline(x=14., lw=1., color="white")
+    ymin, ymax = pl.ylim()
+    #pl.yticks([ymin, ymax], [y_min, y_max])
+    pl.tick_params(labelleft=False)
+
+    ax = pl.subplot2grid((4, 3), (3, 1), colspan=2)
+    pl.minorticks_on()
+    pl.plot(freq_, average_, c=grey)
+    x0, x1 = pl.xlim(freq_[0], freq_[-1])
+    y0, y1 = pl.ylim()
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.xlabel('frequency [$1/P$]')
+    pl.savefig(os.path.join(spa.output_dir, 'p3_evolution_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(spa.output_dir, 'p3_evolution_st%d_le%d.pdf' % (start, length)))
+    if show is True:
+        pl.show()
+    pl.close()
+
+
 

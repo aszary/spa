@@ -32,12 +32,13 @@ class SinglePulseAnalysis:
         #plot.single_old(self)
         #plot.single(self)
         #plot.lrfs(self)
-        plot.folded(self, p3=16.7, length=300)
+        #plot.folded(self, p3=16.7, length=300)
+        plot.p3_evolution(self)
 
 
 def main():
     s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
-    s.load('sJ0815+0939.54015ap', end=500, type='westerbork4')
+    s.load('sJ0815+0939.54015ap', end=None, type='westerbork4')
     s.plot()
     print "Bye"
 
