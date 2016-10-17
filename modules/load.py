@@ -189,3 +189,25 @@ def westerbork4(spa, file_name, end=None, bin_num=None):
                 break
     f.close()
 
+
+def psrchive(spa, file_name, end=None, bin_num=None):
+    """
+    New formats...
+    :param file_name: file to read
+    :param end: number pulses to read
+    :param bin_num: number of bins
+    :return:
+    """
+    try:
+        import psrchive as ps
+    except:
+        print "Error. Python interface to psrchive not installed (remember to ./configure --enable-shared)\nExiting..."
+        exit()
+
+    arch = ps.Archive_load(os.path.join(spa.data_dir, file_name))
+    print arch.get_source()
+    data = arch.get_data()
+    print data.shape
+    print data
+
+

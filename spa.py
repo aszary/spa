@@ -17,7 +17,7 @@ class SinglePulseAnalysis:
         self.off_rms_ = None
         self.base = None
 
-        self.types = {'westerbork': load.westerbork, 'westerbork4': load.westerbork4}
+        self.types = {'westerbork': load.westerbork, 'westerbork4': load.westerbork4, 'psrchive': load.psrchive}
 
     def load(self, file_name, end=None, bin_num=None, type='westerbork4'):
         try:
@@ -28,18 +28,25 @@ class SinglePulseAnalysis:
         fun(self, file_name, end=end, bin_num=bin_num)
 
     def plot(self):
-        #plot.average(self)
-        #plot.single_old(self)
-        #plot.single(self)
-        #plot.lrfs(self)
-        #plot.folded(self, p3=16.7, length=300)
-        plot.p3_evolution(self)
+        plot.average(self)
+        plot.single_old(self)
+        plot.single(self)
+        plot.lrfs(self)
+        plot.folded(self, p3=16.7, length=300)
+        #plot.p3_evolution(self)
 
 
 def main():
-    s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
-    s.load('sJ0815+0939.54015ap', end=None, type='westerbork4')
-    s.plot()
+    #s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
+    #s.load('sJ0815+0939.54015ap', end=None, type='westerbork4')
+    #s.plot()
+
+    s2 = SinglePulseAnalysis(data_dir='/data/szary/B0943/radio/')
+    s2.load('test.asc', end=1000, type='westerbork')
+    #s2.load('test.dat', end=1000, type='psrchive')
+    s2.plot()
+
+
     print "Bye"
 
 

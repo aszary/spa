@@ -252,12 +252,13 @@ def lrfs(spa, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show
     pl.close()
 
 
-def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", times=1, rngs=None, pthres=0.7, sthres=0.1, show=True):
+def folded(spa, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", times=1, rngs=None, pthres=0.7, sthres=0.1, show=True):
     """
     folded profile
     :param spa: SinglePulseAnalysis class
     :param p3: P_3 periodicity
     :param period: pulsar period
+    :param comp_num: number of components in a profile
     :param start: first pulse
     :param length: number of pulses to use
     :param ph_st: phase starting index
@@ -292,8 +293,10 @@ def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None,
 
     single_ = np.array(list(single_) + (times-1) * list(single_))
 
-    max_x_, max_y_ = fun.get_maxima(single_, 4, pthres=pthres, sthres=sthres, smooth=True)
-    my_, mx_, vs, es, xs, xes = fun.fit_lines(max_y_, max_x_, rngs=rngs)
+    max_x_, max_y_ = fun.get_maxima(single_, comp_num, pthres=pthres, sthres=sthres, smooth=True)
+    # TODO no line fitting
+    """
+    #my_, mx_, vs, es, xs, xes = fun.fit_lines(max_y_, max_x_, rngs=rngs)
     dph = phase_[-1] - phase_[0]
     dind = len(single_[0])
     vs2 = []
@@ -308,9 +311,9 @@ def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None,
         else:
             xs2.append(xs[i] / dind * dph + phase_[0])  # phase
         xes2.append(xes[i] / dind * dph)  # phase error
-
     print "Drift rates:", vs2
     print "Drift rates errors:", es2
+    """
 
     red = '#f15a60'
     green = '#7ac36a'
@@ -330,11 +333,9 @@ def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None,
 
     ax = pl.subplot2grid((4, 1), (0, 0))#, colspan=2)
     pl.minorticks_on()
-    #pl.grid()
-    #pl.scatter(range(len(vs2)), vs2, color=red, marker="+", s=200, lw=1.5)
-    pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
+    # TODO no line fitting
+    #pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
     pl.ylim([-1.3, 1.3])
-    #pl.xlim(x0, x1)
     pl.xlim(phase_[0], phase_[-1])
     pl.ylabel(r'Drift rate [$^\circ / {\rm s}$]')
     pl.tick_params(labeltop=True, labelbottom=False)
@@ -347,10 +348,11 @@ def folded(spa, p3=8., period=1., start=0, length=None, ph_st=None, ph_end=None,
     #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
     #pl.contourf(single_, origin="lower", cmap=cmap, extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
     #pl.grid(color="white")
-    for c in xrange(4):
+
+    for c in xrange(comp_num):
         pl.scatter(max_x_[c], max_y_[c], c="white", marker='x', s=10, lw=0.3)
-        pl.plot(mx_[c], my_[c], c="white", lw=0.3)
-    #pl.xticks([100, 200, 300, 400, 500, 600, 700, 800], [])
+        # TODO no line fitting
+        #pl.plot(mx_[c], my_[c], c="white", lw=0.3)
     pl.xticks([], [])
     pl.yticks([ybins/2., 3./2.*ybins], [r'$\frac{P_3}{2}$', r'$\frac{3P_3}{2}$'])
     pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
