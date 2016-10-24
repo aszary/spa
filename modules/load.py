@@ -3,7 +3,7 @@ import os
 import numpy as np
 
 
-def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
+def westerbork(cls, file_name, end=None, bin_num=None, extra_=True):
     """
     :param file_name: file to read
     :param end: number pulses to read
@@ -11,7 +11,7 @@ def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
     :return:
     """
 
-    with open(os.path.join(spa.data_dir, file_name)) as f:
+    with open(os.path.join(cls.data_dir, file_name)) as f:
 
         # read header
         res = f.readline().split()
@@ -26,7 +26,7 @@ def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
         scan = res4[0]
         frequency = float(res4[2])
         bandwidth = float(res4[3])
-        spa.period = float(res4[4])
+        cls.period = float(res4[4])
         mjd_start = float(res4[5])
 
         if bin_num is not None:
@@ -39,7 +39,7 @@ def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
         print 'Number of pulses: ', pulses
         print 'Number of bins: ', bins
         print 'Resolution: ', resolution
-        print 'Period: ', spa.period
+        print 'Period: ', cls.period
         print 'Frequency: ', frequency
         print 'Bandwidth: ', bandwidth
         print "MJD start: ", mjd_start
@@ -48,10 +48,10 @@ def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
         if end is None:
             end = pulses
 
-        spa.stokes_ = np.zeros([4, pulses, bins])
+        cls.stokes_ = np.zeros([4, pulses, bins])
 
-        spa.off_rms_ = np.zeros(pulses)
-        spa.base_ = np.zeros(pulses)
+        cls.off_rms_ = np.zeros(pulses)
+        cls.base_ = np.zeros(pulses)
 
         ln = 4
         # read data
@@ -63,7 +63,7 @@ def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
                 ln += 1
                 re_ind = 0
                 for j, r in enumerate(re):
-                    spa.stokes_[0][i][bin] = float(r)
+                    cls.stokes_[0][i][bin] = float(r)
                     bin += 1
                     if bin == bins:
                         re_ind = j
@@ -91,14 +91,14 @@ def westerbork(spa, file_name, end=None, bin_num=None, extra_=True):
                     for r in re:
                         extra.append(r)
                         ex += 1
-                spa.off_rms_[i] = extra[0]
-                spa.base_[i] = extra[1]
+                cls.off_rms_[i] = extra[0]
+                cls.base_[i] = extra[1]
             if i == end:
                 break
     f.close()
 
 
-def westerbork4(spa, file_name, end=None, bin_num=None):
+def westerbork4(cls, file_name, end=None, bin_num=None):
     """
     All 4 Stokes parameters
     :param file_name: file to read
@@ -107,7 +107,7 @@ def westerbork4(spa, file_name, end=None, bin_num=None):
     :return:
     """
 
-    with open(os.path.join(spa.data_dir, file_name)) as f:
+    with open(os.path.join(cls.data_dir, file_name)) as f:
 
         # read header
         res = f.readline().split()
@@ -144,10 +144,10 @@ def westerbork4(spa, file_name, end=None, bin_num=None):
         if end is None:
             end = pulses
 
-        spa.stokes_ = np.zeros([4, pulses, bins])
+        cls.stokes_ = np.zeros([4, pulses, bins])
 
-        spa.off_rms_ = np.zeros(pulses)
-        spa.base_ = np.zeros(pulses)
+        cls.off_rms_ = np.zeros(pulses)
+        cls.base_ = np.zeros(pulses)
 
         ln = 4
         # read data
@@ -159,7 +159,7 @@ def westerbork4(spa, file_name, end=None, bin_num=None):
                 re = re0.split()
                 ln += 1
                 for j, r in enumerate(re):
-                    spa.stokes_[ind][i][bin] = r
+                    cls.stokes_[ind][i][bin] = r
                     ind += 1
                     if ind == 4:
                         ind = 0
@@ -182,15 +182,15 @@ def westerbork4(spa, file_name, end=None, bin_num=None):
                 for r in re:
                     extra.append(r)
                     ex += 1
-            spa.off_rms_[i] = extra[0]
-            spa.base_[i] = extra[1]
+            cls.off_rms_[i] = extra[0]
+            cls.base_[i] = extra[1]
             #pul = extra[2]
             if i == end:
                 break
     f.close()
 
 
-def psrchive(spa, file_name, end=None, bin_num=None):
+def psrchive(cls, file_name, end=None, bin_num=None):
     """
     New formats...
     :param file_name: file to read
@@ -204,7 +204,7 @@ def psrchive(spa, file_name, end=None, bin_num=None):
         print "Error. Python interface to psrchive not installed (remember to ./configure --enable-shared)\nExiting..."
         exit()
 
-    arch = ps.Archive_load(os.path.join(spa.data_dir, file_name))
+    arch = ps.Archive_load(os.path.join(cls.data_dir, file_name))
     print arch.get_source()
     data = arch.get_data()
     print data.shape

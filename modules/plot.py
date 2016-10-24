@@ -7,24 +7,24 @@ from matplotlib import pyplot as pl
 import fun
 
 
-def average(spa, start=0, length=None, show=True):
+def average(cls, start=0, length=None, show=True):
     """
     plots average profile
-    :param spa: SinglePulseAnalysis class
+    :param cls: SinglePulseAnalysis class
     :param start: first pulse
     :param length: number of pulses to use
     :param show: show plot on screen?
     :return:
     """
 
-    bins = len(spa.stokes_[0][0])
-    size = len(spa.stokes_[0])
+    bins = len(cls.stokes_[0][0])
+    size = len(cls.stokes_[0])
     if length is None:
         length = size - start
 
     average_ = np.zeros(bins)
     for i in xrange(start, start+length, 1):
-        average_ += spa.stokes_[0][i]
+        average_ += cls.stokes_[0][i]
 
     mp.rc('font', size=7.)
     mp.rc('legend', fontsize=7.)
@@ -35,25 +35,25 @@ def average(spa, start=0, length=None, show=True):
     pl.minorticks_on()
     pl.subplots_adjust(left=0.14, bottom=0.08, right=0.99, top=0.99)
     pl.plot(average_)
-    pl.savefig(os.path.join(spa.output_dir, 'average_profile_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(spa.output_dir, 'average_profile_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'average_profile_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'average_profile_st%d_le%d.pdf' % (start, length)))
     if show is True:
        pl.show()
     pl.close()
 
 
-def single_old(spa, start=0, length=100, norm=0.1, show=True):
+def single_old(cls, start=0, length=100, norm=0.1, show=True):
     """
     plots single pulses (old style)
-    :param spa: SinglePulseAnalysis class
+    :param cls: SinglePulseAnalysis class
     :param start: first pulse
     :param length: number of pulses to use
     :param norm: normalization factor (by hand - lazy!)
     :param show: show plot on screen?
     :return:
     """
-    bins = len(spa.stokes_[0][0])
-    size = len(spa.stokes_[0])
+    bins = len(cls.stokes_[0][0])
+    size = len(cls.stokes_[0])
     if length is None:
         length = size - start
 
@@ -67,21 +67,21 @@ def single_old(spa, start=0, length=100, norm=0.1, show=True):
     pl.minorticks_on()
     # plots data
     for i in xrange(start, start + length, 1):
-        da = np.array(spa.stokes_[0][i]) * norm + i
+        da = np.array(cls.stokes_[0][i]) * norm + i
         pl.plot(da, c="grey")
     pl.xlim(0, bins)
     pl.ylim(start, start+length)
-    pl.savefig(os.path.join(spa.output_dir, 'single_pulses_old_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(spa.output_dir, 'single_pulses_old_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_old_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_old_st%d_le%d.pdf' % (start, length)))
     if show is True:
        pl.show()
     pl.close()
 
 
-def single(spa, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", show=True):
     """
     plots single pulses (new style)
-    :param spa: SinglePulseAnalysis class
+    :param cls: SinglePulseAnalysis class
     :param start: first pulse
     :param length: number of pulses to use
     :param ph_st: phase starting index
@@ -91,12 +91,12 @@ def single(spa, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", sh
     :return:
     """
 
-    bins = len(spa.stokes_[0][0])
-    size = len(spa.stokes_[0])
+    bins = len(cls.stokes_[0][0])
+    size = len(cls.stokes_[0])
     if length is None:
         length = size - start
 
-    single_ = spa.stokes_[0][start:start+length][:]
+    single_ = cls.stokes_[0][start:start+length][:]
     if ph_st is not None:
         old_len = float(len(single_[0]))
         ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -147,17 +147,17 @@ def single(spa, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", sh
     pl.yticks(yt[0], [])
     pl.xlabel(r'longitude [$^{\circ}$]')
     pl.tick_params(labeltop=False, labelbottom=True)
-    pl.savefig(os.path.join(spa.output_dir, 'single_pulses_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(spa.output_dir, 'single_pulses_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_st%d_le%d.pdf' % (start, length)))
     if show is True:
         pl.show()
     pl.close()
 
 
-def lrfs(spa, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show=True):
     """
     the Longitude Resolved Fluctuation Spectra
-    :param spa: SinglePulseAnalysis class
+    :param cls: SinglePulseAnalysis class
     :param start: first pulse
     :param length: number of pulses to use
     :param ph_st: phase starting index
@@ -168,9 +168,9 @@ def lrfs(spa, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show
     """
 
     if length == None:
-        length = len(spa.stokes_[0])
+        length = len(cls.stokes_[0])
 
-    single_ = spa.stokes_[0][start:start+length][:]
+    single_ = cls.stokes_[0][start:start+length][:]
     if ph_st is not None:
         old_len = float(len(single_[0]))
         ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -245,17 +245,17 @@ def lrfs(spa, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel(r'longitude [$^{\circ}$]')
-    pl.savefig(os.path.join(spa.output_dir, 'lrfs_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(spa.output_dir, 'lrfs_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'lrfs_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'lrfs_st%d_le%d.pdf' % (start, length)))
     if show is True:
         pl.show()
     pl.close()
 
 
-def folded(spa, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", times=1, rngs=None, pthres=0.7, sthres=0.1, show=True):
+def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", times=1, rngs=None, pthres=0.7, sthres=0.1, show=True):
     """
     folded profile
-    :param spa: SinglePulseAnalysis class
+    :param cls: SinglePulseAnalysis class
     :param p3: P_3 periodicity
     :param period: pulsar period
     :param comp_num: number of components in a profile
@@ -273,8 +273,8 @@ def folded(spa, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     """
 
     if length is None:
-        length = len(spa.stokes_[0])
-    single_ = spa.stokes_[0][start:start+length][:]
+        length = len(cls.stokes_[0])
+    single_ = cls.stokes_[0][start:start+length][:]
     if ph_st is not None:
         old_len = float(len(single_[0]))
         ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -368,17 +368,17 @@ def folded(spa, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     pl.xlabel(r'longitude [$^{\circ}$]')
     yt = pl.yticks()
     pl.yticks(yt[0], [])
-    pl.savefig(os.path.join(spa.output_dir, 'folded_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(spa.output_dir, 'folded_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'folded_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'folded_st%d_le%d.pdf' % (start, length)))
     if show is True:
         pl.show()
     pl.close()
 
 
-def p3_evolution(spa, length=256, start=0, end=None, step=10, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def p3_evolution(cls, length=256, start=0, end=None, step=10, ph_st=None, ph_end=None, cmap="inferno", show=True):
     """
     P3 evolution with time
-    :param spa: SinglePulseAnalysis class
+    :param cls: SinglePulseAnalysis class
     :param length: number of pulses to use in lrfs
     :param start: first pulse
     :param end: last pulse
@@ -391,7 +391,7 @@ def p3_evolution(spa, length=256, start=0, end=None, step=10, ph_st=None, ph_end
     """
 
     if end is None:
-        end = len(spa.stokes_[0])
+        end = len(cls.stokes_[0])
 
     freqs_ = []
     p3_ = []
@@ -399,7 +399,7 @@ def p3_evolution(spa, length=256, start=0, end=None, step=10, ph_st=None, ph_end
     p3_pulse_ = []
 
     for i in xrange(start, end-length, step):
-        single_ = spa.stokes_[0][i:i+length][:]
+        single_ = cls.stokes_[0][i:i+length][:]
         if ph_st is not None:
             old_len = float(len(single_[0]))
             ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -465,8 +465,8 @@ def p3_evolution(spa, length=256, start=0, end=None, step=10, ph_st=None, ph_end
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel('frequency [$1/P$]')
-    pl.savefig(os.path.join(spa.output_dir, 'p3_evolution_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(spa.output_dir, 'p3_evolution_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'p3_evolution_st%d_le%d.svg' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, 'p3_evolution_st%d_le%d.pdf' % (start, length)))
     if show is True:
         pl.show()
     pl.close()

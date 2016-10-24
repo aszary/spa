@@ -28,12 +28,12 @@ class SinglePulseAnalysis:
         fun(self, file_name, end=end, bin_num=bin_num)
 
     def plot(self):
-        plot.average(self)
-        plot.single_old(self)
-        plot.single(self)
-        plot.lrfs(self)
-        plot.folded(self, p3=16.7, length=300)
-        #plot.p3_evolution(self)
+        #plot.average(self)
+        #plot.single_old(self)
+        #plot.single(self)
+        #plot.lrfs(self)
+        #plot.folded(self, p3=16.7, length=300)
+        plot.p3_evolution(self)
 
 
 def main():
