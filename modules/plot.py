@@ -17,14 +17,14 @@ def average(cls, start=0, length=None, show=True):
     :return:
     """
 
-    bins = len(cls.stokes_[0][0])
-    size = len(cls.stokes_[0])
+    bins = len(cls.data_[0])
+    size = len(cls.data_)
     if length is None:
         length = size - start
 
     average_ = np.zeros(bins)
     for i in xrange(start, start+length, 1):
-        average_ += cls.stokes_[0][i]
+        average_ += cls.data_[i]
 
     mp.rc('font', size=7.)
     mp.rc('legend', fontsize=7.)
@@ -52,8 +52,8 @@ def single_old(cls, start=0, length=100, norm=0.1, show=True):
     :param show: show plot on screen?
     :return:
     """
-    bins = len(cls.stokes_[0][0])
-    size = len(cls.stokes_[0])
+    bins = len(cls.data_[0])
+    size = len(cls.data_)
     if length is None:
         length = size - start
 
@@ -67,7 +67,7 @@ def single_old(cls, start=0, length=100, norm=0.1, show=True):
     pl.minorticks_on()
     # plots data
     for i in xrange(start, start + length, 1):
-        da = np.array(cls.stokes_[0][i]) * norm + i
+        da = np.array(cls.data_[i]) * norm + i
         pl.plot(da, c="grey")
     pl.xlim(0, bins)
     pl.ylim(start, start+length)
@@ -91,12 +91,12 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", sh
     :return:
     """
 
-    bins = len(cls.stokes_[0][0])
-    size = len(cls.stokes_[0])
+    bins = len(cls.data_[0])
+    size = len(cls.data_)
     if length is None:
         length = size - start
 
-    single_ = cls.stokes_[0][start:start+length][:]
+    single_ = cls.data_[start:start+length][:]
     if ph_st is not None:
         old_len = float(len(single_[0]))
         ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -168,9 +168,9 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show
     """
 
     if length == None:
-        length = len(cls.stokes_[0])
+        length = len(cls.data_)
 
-    single_ = cls.stokes_[0][start:start+length][:]
+    single_ = cls.data_[start:start+length][:]
     if ph_st is not None:
         old_len = float(len(single_[0]))
         ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -273,8 +273,8 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     """
 
     if length is None:
-        length = len(cls.stokes_[0])
-    single_ = cls.stokes_[0][start:start+length][:]
+        length = len(cls.data_)
+    single_ = cls.data_[start:start+length][:]
     if ph_st is not None:
         old_len = float(len(single_[0]))
         ns_ = np.zeros([len(single_), ph_end-ph_st])
@@ -391,7 +391,7 @@ def p3_evolution(cls, length=256, start=0, end=None, step=10, ph_st=None, ph_end
     """
 
     if end is None:
-        end = len(cls.stokes_[0])
+        end = len(cls.data_)
 
     freqs_ = []
     p3_ = []
@@ -399,7 +399,7 @@ def p3_evolution(cls, length=256, start=0, end=None, step=10, ph_st=None, ph_end
     p3_pulse_ = []
 
     for i in xrange(start, end-length, step):
-        single_ = cls.stokes_[0][i:i+length][:]
+        single_ = cls.data_[i:i+length][:]
         if ph_st is not None:
             old_len = float(len(single_[0]))
             ns_ = np.zeros([len(single_), ph_end-ph_st])

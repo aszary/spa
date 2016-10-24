@@ -48,7 +48,7 @@ def westerbork(cls, file_name, end=None, bin_num=None, extra_=True):
         if end is None:
             end = pulses
 
-        cls.stokes_ = np.zeros([4, pulses, bins])
+        cls.data_ = np.zeros([pulses, bins])
 
         cls.off_rms_ = np.zeros(pulses)
         cls.base_ = np.zeros(pulses)
@@ -63,7 +63,7 @@ def westerbork(cls, file_name, end=None, bin_num=None, extra_=True):
                 ln += 1
                 re_ind = 0
                 for j, r in enumerate(re):
-                    cls.stokes_[0][i][bin] = float(r)
+                    cls.data_[i][bin] = float(r)
                     bin += 1
                     if bin == bins:
                         re_ind = j
@@ -145,6 +145,7 @@ def westerbork4(cls, file_name, end=None, bin_num=None):
             end = pulses
 
         cls.stokes_ = np.zeros([4, pulses, bins])
+        cls.data_ = np.zeros([pulses, bins])
 
         cls.off_rms_ = np.zeros(pulses)
         cls.base_ = np.zeros(pulses)
@@ -159,6 +160,8 @@ def westerbork4(cls, file_name, end=None, bin_num=None):
                 re = re0.split()
                 ln += 1
                 for j, r in enumerate(re):
+                    if ind == 0:
+                        cls.data_[i][bin] = r
                     cls.stokes_[ind][i][bin] = r
                     ind += 1
                     if ind == 4:

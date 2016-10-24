@@ -13,7 +13,8 @@ class SinglePulseAnalysis:
         self.data_dir = data_dir
         self.output_dir = output_dir
 
-        self.stokes_ = None
+        self.stokes_ = None  # not used in plots anymore, use data_ instead
+        self.data_ = None
         self.off_rms_ = None
         self.base = None
 
@@ -28,11 +29,11 @@ class SinglePulseAnalysis:
         fun(self, file_name, end=end, bin_num=bin_num)
 
     def plot(self):
-        #plot.average(self)
-        #plot.single_old(self)
-        #plot.single(self)
-        #plot.lrfs(self)
-        #plot.folded(self, p3=16.7, length=300)
+        plot.average(self)
+        plot.single_old(self)
+        plot.single(self)
+        plot.lrfs(self)
+        plot.folded(self, p3=16.7, length=300)
         plot.p3_evolution(self)
 
 
