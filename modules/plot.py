@@ -7,12 +7,13 @@ from matplotlib import pyplot as pl
 import fun
 
 
-def average(cls, start=0, length=None, show=True):
+def average(cls, start=0, length=None, name_mod=0, show=True):
     """
     plots average profile
     :param cls: SinglePulseAnalysis class
     :param start: first pulse
     :param length: number of pulses to use
+    :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
     """
@@ -35,20 +36,21 @@ def average(cls, start=0, length=None, show=True):
     pl.minorticks_on()
     pl.subplots_adjust(left=0.14, bottom=0.08, right=0.99, top=0.99)
     pl.plot(average_)
-    pl.savefig(os.path.join(cls.output_dir, 'average_profile_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(cls.output_dir, 'average_profile_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_average_profile_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_average_profile_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
        pl.show()
     pl.close()
 
 
-def single_old(cls, start=0, length=100, norm=0.1, show=True):
+def single_old(cls, start=0, length=100, norm=0.1, name_mod=0, show=True):
     """
     plots single pulses (old style)
     :param cls: SinglePulseAnalysis class
     :param start: first pulse
     :param length: number of pulses to use
     :param norm: normalization factor (by hand - lazy!)
+    :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
     """
@@ -71,14 +73,14 @@ def single_old(cls, start=0, length=100, norm=0.1, show=True):
         pl.plot(da, c="grey")
     pl.xlim(0, bins)
     pl.ylim(start, start+length)
-    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_old_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_old_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_old_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_old_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
        pl.show()
     pl.close()
 
 
-def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
     """
     plots single pulses (new style)
     :param cls: SinglePulseAnalysis class
@@ -87,6 +89,7 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", sh
     :param ph_st: phase starting index
     :param ph_end: phase ending index
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
     """
@@ -147,14 +150,14 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", sh
     pl.yticks(yt[0], [])
     pl.xlabel(r'longitude [$^{\circ}$]')
     pl.tick_params(labeltop=False, labelbottom=True)
-    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(cls.output_dir, 'single_pulses_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
         pl.show()
     pl.close()
 
 
-def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
     """
     the Longitude Resolved Fluctuation Spectra
     :param cls: SinglePulseAnalysis class
@@ -163,6 +166,7 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show
     :param ph_st: phase starting index
     :param ph_end: phase ending index
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
     """
@@ -245,14 +249,14 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", show
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel(r'longitude [$^{\circ}$]')
-    pl.savefig(os.path.join(cls.output_dir, 'lrfs_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(cls.output_dir, 'lrfs_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_lrfs_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_lrfs_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
         pl.show()
     pl.close()
 
 
-def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", times=1, rngs=None, pthres=0.7, sthres=0.1, show=True):
+def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", darkness=1., times=1, rngs=None, pthres=0.7, sthres=0.1, name_mod=0, show=True):
     """
     folded profile
     :param cls: SinglePulseAnalysis class
@@ -264,10 +268,12 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     :param ph_st: phase starting index
     :param ph_end: phase ending index
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param darkness: lower value for brighter plots
     :param times: how many p3 periods to plot
     :param rngs: ranges fitting procedure
     :param pthres: threshold for peak finding
     :param sthres: signal threshold
+    :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
     """
@@ -287,7 +293,7 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     else:
         phase_ = np.linspace(0., 360., len(single_[0]))
 
-    ybins = 17
+    ybins = 30
     single_ = fun.fold_single(single_, p3=p3, ybins=ybins)
     average_ = fun.average_profile(single_)
 
@@ -344,7 +350,7 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
 
     ax = pl.subplot2grid((4, 1), (1, 0), rowspan=2)
     pl.minorticks_on()
-    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='bicubic', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
     #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
     #pl.contourf(single_, origin="lower", cmap=cmap, extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
     #pl.grid(color="white")
@@ -368,14 +374,14 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     pl.xlabel(r'longitude [$^{\circ}$]')
     yt = pl.yticks()
     pl.yticks(yt[0], [])
-    pl.savefig(os.path.join(cls.output_dir, 'folded_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(cls.output_dir, 'folded_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_folded_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_folded_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
         pl.show()
     pl.close()
 
 
-def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
     """
     P3 evolution with time
     :param cls: SinglePulseAnalysis class
@@ -386,6 +392,7 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end
     :param ph_st: phase starting index
     :param ph_end: phase ending index
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
     """
@@ -465,8 +472,8 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel('frequency [$1/P$]')
-    pl.savefig(os.path.join(cls.output_dir, 'p3_evolution_st%d_le%d.svg' % (start, length)))
-    pl.savefig(os.path.join(cls.output_dir, 'p3_evolution_st%d_le%d.pdf' % (start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
         pl.show()
     pl.close()
