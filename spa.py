@@ -38,34 +38,37 @@ class SinglePulseAnalysis:
         plot.folded(self, p3=16.7, length=300)
         plot.p3_evolution(self)
 
-    def run1(self, files):
+    def run1(self, files, num=0):
         """
         a simple run
+        :param files: files to deal with
+        :param num: which file to load
         """
-        self.load(files[0], end=10000, type='westerbork')
+        self.load(files[num], end=10000, type='westerbork')
         plot.average(self, start=8000, length=1000)
         plot.single(self, start=8000, length=1000)
         plot.lrfs(self, start=8000, ph_st=1100, ph_end=1800)
         plot.folded(self, p3=2.1508, start=8000, length=1000, ph_st=1100, ph_end=1800)
         plot.p3_evolution(self, start=0, end=10000, step=50)
 
-    def runs(self, files, pulses=1000, end=None):
+    def runs(self, files, num=0, pulses=1000, end=None):
         """
         go grab a coffee (or two)
         :param files: files to deal with
-        :param pulses: number of pulses to check
+        :param num: which file to load
+        :param pulses: number of pulses in one set
         :param end: last pulse to load (None for all)
         """
-        self.load(files[0], end=end, type='westerbork')
+        self.load(files[num], end=end, type='westerbork')
         if end is None:
             end = len(self.data_)
         run_num = end / pulses
         rng = np.linspace(0, end, run_num)
         for i in xrange(run_num-1):
-            plot.average(self, start=int(rng[i]), length=int(rng[i+1]-rng[i]), name_mod='r%d' % i, show=False)
-            plot.single(self, start=int(rng[i]), length=int(rng[i+1]-rng[i]), name_mod='r%d' % i, show=False)
-            plot.lrfs(self, start=int(rng[i]), length=int(rng[i+1]-rng[i]), name_mod='r%d' % i, show=False)
-        plot.p3_evolution(self, start=0, length=512, end=end, step=50, name_mod='r', show=False)
+            plot.average(self, start=int(rng[i]), length=int(rng[i+1]-rng[i]), name_mod='r%d_%d' % (num, i), show=False)
+            plot.single(self, start=int(rng[i]), length=int(rng[i+1]-rng[i]), name_mod='r%d_%d' % (num, i), show=False)
+            plot.lrfs(self, start=int(rng[i]), length=int(rng[i+1]-rng[i]), name_mod='r%d_%d' % (num, i), show=False)
+        plot.p3_evolution(self, start=0, length=512, end=end, step=50, name_mod='r%d' % num, show=False)
 
 
 def main():
