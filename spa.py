@@ -50,7 +50,6 @@ def main():
     s2.load(files[0], end=1000, type='westerbork')
     s2.plot()
 
-
     print "Bye"
 
 

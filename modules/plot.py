@@ -133,7 +133,7 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", sh
 
     ax = pl.subplot2grid((5, 3), (0, 1), rowspan=4, colspan=2)
     #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto')
-    pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', vmax=np.max(single_))  #, clim=(0., 1.0))
+    pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto', vmax=np.max(single_))  #, clim=(0., 1.0))
     pl.xticks([], [])
     ymin, ymax = pl.ylim()
     #pl.yticks([ymin, ymax], [y_min, y_max])
@@ -375,7 +375,7 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     pl.close()
 
 
-def p3_evolution(cls, length=256, start=0, end=None, step=10, ph_st=None, ph_end=None, cmap="inferno", show=True):
+def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end=None, cmap="inferno", show=True):
     """
     P3 evolution with time
     :param cls: SinglePulseAnalysis class
