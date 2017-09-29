@@ -208,9 +208,37 @@ def psrchive(cls, file_name, end=None, bin_num=None):
         exit()
 
     arch = ps.Archive_load(os.path.join(cls.data_dir, file_name))
-    print arch.get_source()
+    src = arch.get_source()
+    bnd = arch.get_bandwidth()
+    frq = arch.get_centre_frequency()
+    dm = arch.get_dispersion_measure()
+    bins = arch.get_nbin()
+    pulses = arch.get_nsubint()
+    nchan = arch.get_nchan()
+    npol = arch.get_npol()
+    reciver = arch.get_receiver_name()
+    tel = arch.get_telescope()
+    arch.fscrunch()
+    print "Telescope:", tel, "reciver:", reciver
+    print "Source:", src
+    print "DM", dm
+    print "Bandwidth:", bnd
+    print "Number of chanels", nchan
+    print "Frequency:", frq
+    print "Number of polarizations:", npol
+    print "Bins:", bins
+    print "Nsubint (pulses):", pulses
+
+    cls.data_ = np.zeros([pulses, bins])
+
     data = arch.get_data()
     print data.shape
-    print data
+    for i in xrange(pulses):
+        for j in xrange(bins):
+            cls.data_[i][j] = data[i][0][0][j]  # 0, 0 indexes?
+
+
+   # print dir(arch)
+    #print dir(data)
 
 

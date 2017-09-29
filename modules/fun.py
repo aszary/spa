@@ -308,7 +308,7 @@ def get_maxima(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
                     """
     return max_x_, max_y_
 
-def get_p3(signal, x):
+def get_p3(signal, x, on_fail=0):
     base = pk.baseline(signal)
     signal -= base
     pind = pk.indexes(signal, min_dist=len(signal))
@@ -316,9 +316,14 @@ def get_p3(signal, x):
         freq, err = pk.interpolate2(x, signal, ind=pind, width=np.min([10, pind-2]), func=pk.gaussian_fit)
         print freq, err
     except:
-        print 'Warning! Gaussian fit failed, maximum used.'
-        freq = [x[pind[0]]]
-        err = [0.1]  # not now
+        print 'Warning! Gaussian fit failed:'
+        if on_fail == 0:
+            print '\tmaximum used.'
+            freq = [x[pind[0]]]
+            err = [0.1]  # not now
+        elif on_fail == 1:
+            print '\tignored.'
+            return None, None, None
     """
     print 1. / freq[0]
     nx = np.linspace(0, 0.1, num=500)

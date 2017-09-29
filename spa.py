@@ -72,20 +72,41 @@ class SinglePulseAnalysis:
 
 
 def main():
-    #s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
-    #s.load('sJ0815+0939.54015ap', end=None, type='westerbork4')
-    #s.load('test.dat', end=1000, type='psrchive')  # TODO not implemented yet
-    #s.plot_all()
+    #j0815()
+    #b0943()
+    b1839()
+    print "Bye"
 
-    files = ['./20111105/B0943+10_L33341_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111107/B0943+10_L33339_RSP0.PrepsubbNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111127/B0943+10_L35621_RSP0.PrepsubbZerodmNoclip_DM15.31.puma.119.gg.1pol.asc','./20111201/B0943+10_L36159_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111204/B0943+10_L36157_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111221/B0943+10_L39707_RSP0.ZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20120111/B0943+10_L42350_RSP0.PrepdataNoclip.1.puma.119.gg.1pol.asc']
 
-    #s2 = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/0943+10/')
-    #s2.run1(files)
+def b1839():
+    s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
+    s.load('200505521.1380.debase.gg', end=None, type='psrchive')  # TODO not implemented yet
+    #plot.average(s, name_mod="B1839", show=False)
+    #plot.single_old(s, name_mod="B1839", show=False)
+    #plot.single(s, start=2200, length=200, ph_st=190, ph_end=270, name_mod="B1839", show=True)
+    #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
+    plot.p3_evolution(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", show=True)
+    #plot.p3_evolution(s, end=3004, name_mod="B1839", show=False)
+    #plot.folded(self, p3=16.7, length=300)
+
+
+
+def b0943():
+    s2 = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/0943+10/')
+    s2.run1(files)
 
     s3 = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/0943+10/')
     s3.runs(files)
 
-    print "Bye"
+
+def j0815():
+    s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
+    s.load('sJ0815+0939.54015ap', end=None, type='westerbork4')
+    #s.load('test.dat', end=1000, type='psrchive')  # TODO not implemented yet
+    s.plot_all()
+
+    files = ['./20111105/B0943+10_L33341_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111107/B0943+10_L33339_RSP0.PrepsubbNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111127/B0943+10_L35621_RSP0.PrepsubbZerodmNoclip_DM15.31.puma.119.gg.1pol.asc','./20111201/B0943+10_L36159_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111204/B0943+10_L36157_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111221/B0943+10_L39707_RSP0.ZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20120111/B0943+10_L42350_RSP0.PrepdataNoclip.1.puma.119.gg.1pol.asc']
+
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 import matplotlib as mp
+mp.use("Agg")
 from matplotlib import pyplot as pl
 
 import fun
@@ -36,8 +37,10 @@ def average(cls, start=0, length=None, name_mod=0, show=True):
     pl.minorticks_on()
     pl.subplots_adjust(left=0.14, bottom=0.08, right=0.99, top=0.99)
     pl.plot(average_)
-    pl.savefig(os.path.join(cls.output_dir, '%s_average_profile_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_average_profile_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_average_profile_st%d_le%d.svg' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".svg", ".pdf")))
+    print "filename:", filename
     if show is True:
        pl.show()
     pl.close()
@@ -234,7 +237,7 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", name
     pl.ylabel('frequency [$1/P$]')
 
     ax = pl.subplot2grid((5, 3), (1, 1), rowspan=3, colspan=2)
-    pl.imshow(np.abs(lrfs_), origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto')  # , vmax=700.5)
+    pl.imshow(np.abs(lrfs_), origin="lower", cmap=cmap, interpolation='none', aspect='auto')  # , vmax=700.5)
     pl.xticks([], [])
     ymin, ymax = pl.ylim()
     #pl.yticks([ymin, ymax], [y_min, y_max])
@@ -381,7 +384,7 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     pl.close()
 
 
-def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
+def p3_evolution(cls, length=256, start=0, end=1000, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
     """
     P3 evolution with time
     :param cls: SinglePulseAnalysis class
@@ -404,6 +407,9 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end
     p3_ = []
     p3_err_ = []
     p3_pulse_ = []
+    p3_clean_ = []
+    p3_err_clean_ = []
+    p3_pulse_clean_ = []
 
     for i in xrange(start, end-length, step):
         single_ = cls.data_[i:i+length][:]
@@ -418,17 +424,48 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end
         counts_, pulses_ = fun.counts(np.abs(lrfs_))
         try:
             # new approach
-            p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_)
-            p3_.append(p3)
-            p3_err_.append(p3_err)
-            p3_pulse_.append(i)
+            p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_, on_fail=1)
+            if p3 is not None:
+                p3_.append(p3)
+                p3_err_.append(p3_err)
+                p3_pulse_.append(i)
+                if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
+                    p3_clean_.append(p3)
+                    p3_err_clean_.append(p3_err)
+                    p3_pulse_clean_.append(i)
+
         except IndexError:
             pass
         except ValueError:
             #print counts_
             #exit()
             pass
+
         freqs_.append(counts_)
+
+    # continous p3
+    #print p3_pulse_clean_[-1]
+    p3_cont_ = np.zeros([p3_pulse_clean_[-1]+1])
+    on_off_ = np.zeros([p3_pulse_clean_[-1]+1])
+    for i in xrange(len(p3_pulse_clean_)):
+        ind = p3_pulse_clean_[i]
+        p3_cont_[ind] = p3_clean_[i]
+        on_off_[ind] = 1.0
+    #for i in xrange(p3_pulse_clean_[-1]):
+    #    on_off_[i] = np.random.ranf()
+
+
+    p3_len = len(p3_cont_)
+    freq = np.fft.fftfreq(p3_len, d=1.)[1:p3_len/2]  # one side frequency range
+    fft = np.fft.fft(p3_cont_)[1:p3_len/2]  # fft computing
+    fft = np.abs(fft)
+    fft /= np.max(fft)
+    fft_on = np.fft.fft(on_off_)[1:p3_len/2]  # fft computing
+    fft_on = np.abs(fft_on)
+    fft_on /= np.max(fft_on)
+    df = fft - fft_on
+    df /= np.max(df)
+
 
     average_ = fun.average_profile(freqs_)
 
@@ -446,16 +483,19 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end
     pl.minorticks_on()
     pl.locator_params(axis='x', nbins=4)
     #pl.plot(p3_, p3_pulse_, c=grey)
-    pl.errorbar(p3_, p3_pulse_, xerr=p3_err_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
-    pl.ylim(p3_pulse_[0], p3_pulse_[-1])
+    #pl.errorbar(p3_, p3_pulse_, xerr=p3_err_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
+    pl.errorbar(p3_clean_, p3_pulse_clean_, xerr=p3_err_clean_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
+    #pl.ylim(p3_pulse_[0], p3_pulse_[-1])
+    pl.ylim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
     #pl.locator_params(nbins=3)
-    pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
+    #pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
+    #pl.xlim([5.4, 7.1])   # comment this hack!
     #pl.xticks([15, 17, 19])
     pl.ylabel('start period no.')
     pl.xlabel('$P_3$')
 
     ax = pl.subplot2grid((4, 3), (0, 1), rowspan=3, colspan=2)
-    pl.imshow(freqs_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto')  # , vmax=700.5)
+    pl.imshow(freqs_, origin="lower", cmap=cmap, interpolation='none', aspect='auto')  # , vmax=700.5)
     pl.xticks([], [])
     #pl.grid(color="white")
     #pl.axvline(x=14., lw=1., color="white")
@@ -478,5 +518,35 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=10, ph_st=None, ph_end
         pl.show()
     pl.close()
 
+    pl.figure()
+    pl.minorticks_on()
+    ax = pl.subplot2grid((2, 1), (0, 0))
+    pl.errorbar(p3_pulse_clean_,p3_clean_, yerr=p3_err_clean_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
+    pl.xlim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
+    #pl.scatter(range(0, p3_len), p3_cont_, c="red")
+    #pl.ylim([5.4, 7.1])  # comment it!
+    pl.ylabel('$P_3$')
+
+    ax = pl.subplot2grid((2, 1), (1, 0))
+    pl.minorticks_on()
+    #pl.axvline(x=0.005, color="red")
+    pl.plot(freq, fft_on, lw=2, c="red", alpha=0.5, label="on/off")
+    pl.plot(freq, fft, lw=1, c="blue", alpha=0.5, label="$P_3$")
+    #pl.plot(freq, df, lw=2, c="black", alpha=0.7, label="$P_3$ - on/off")
+    ylims = pl.ylim()
+    pl.legend()
+
+    pl.text(0.0025, ylims[0] + 0.85*(ylims[1]-ylims[0]), "0.0025")
+    pl.text(0.005, ylims[0] + 0.8*(ylims[1]-ylims[0]), "0.005")
+    pl.text(0.0007, ylims[0] + 0.95*(ylims[1]-ylims[0]), "0.0007")
+    #pl.text(0.008, ylims[0] + 0.4*(ylims[1]-ylims[0]), "0.008")
+    pl.xlim([0., 0.05])
+    pl.xlabel('frequency [$1/P$]')
+
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    if show is True:
+        pl.show()
+    pl.close()
 
 
