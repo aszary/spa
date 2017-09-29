@@ -384,7 +384,7 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     pl.close()
 
 
-def p3_evolution(cls, length=256, start=0, end=1000, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
+def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
     """
     P3 evolution with time
     :param cls: SinglePulseAnalysis class
@@ -419,7 +419,6 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=5, ph_st=None, ph_end=
             for j in xrange(len(single_)):
                 ns_[j] = single_[j][ph_st:ph_end]
             single_ = ns_
-
         lrfs_, freq_ = fun.lrfs(single_, None)
         counts_, pulses_ = fun.counts(np.abs(lrfs_))
         try:
@@ -433,14 +432,10 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=5, ph_st=None, ph_end=
                     p3_clean_.append(p3)
                     p3_err_clean_.append(p3_err)
                     p3_pulse_clean_.append(i)
-
         except IndexError:
             pass
         except ValueError:
-            #print counts_
-            #exit()
             pass
-
         freqs_.append(counts_)
 
     # continous p3
@@ -454,7 +449,6 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=5, ph_st=None, ph_end=
     #for i in xrange(p3_pulse_clean_[-1]):
     #    on_off_[i] = np.random.ranf()
 
-
     p3_len = len(p3_cont_)
     freq = np.fft.fftfreq(p3_len, d=1.)[1:p3_len/2]  # one side frequency range
     fft = np.fft.fft(p3_cont_)[1:p3_len/2]  # fft computing
@@ -466,8 +460,7 @@ def p3_evolution(cls, length=256, start=0, end=1000, step=5, ph_st=None, ph_end=
     df = fft - fft_on
     df /= np.max(df)
 
-
-    average_ = fun.average_profile(freqs_)
+    average_ = fun.average_profile(np.array(freqs_))
 
     grey = '#737373'
 

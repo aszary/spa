@@ -74,21 +74,32 @@ class SinglePulseAnalysis:
 def main():
     #j0815()
     #b0943()
-    b1839()
+    #b1839()
+    b1828()
     print "Bye"
+
+def b1828():
+    s = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/B1828-11/')
+    s.load('2007-04-12-11:17:02.ar', end=None, type='psrchive')
+    #plot.average(s, name_mod="B1828", show=False)
+    #plot.single_old(s, name_mod="B1828", show=False)
+    #plot.single(s, name_mod="B1828", show=True)
+    #plot.lrfs(s, length=256, name_mod="B1828", show=False)
+    plot.p3_evolution(s, length=128, step=1, start=0, name_mod="B1828", show=True)
+    #plot.p3_evolution(s, name_mod="B1828", show=False)
+    #plot.folded(s, p3=8, length=660, name_mod="B1828")  # TODO fix it!
+
 
 
 def b1839():
     s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
-    s.load('200505521.1380.debase.gg', end=None, type='psrchive')  # TODO not implemented yet
+    s.load('200505521.1380.debase.gg', end=None, type='psrchive') 
     #plot.average(s, name_mod="B1839", show=False)
     #plot.single_old(s, name_mod="B1839", show=False)
     #plot.single(s, start=2200, length=200, ph_st=190, ph_end=270, name_mod="B1839", show=True)
     #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
     plot.p3_evolution(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", show=True)
     #plot.p3_evolution(s, end=3004, name_mod="B1839", show=False)
-    #plot.folded(self, p3=16.7, length=300)
-
 
 
 def b0943():

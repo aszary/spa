@@ -195,7 +195,7 @@ def westerbork4(cls, file_name, end=None, bin_num=None):
 
 def psrchive(cls, file_name, end=None, bin_num=None):
     """
-    New formats...
+    New format...
     :param file_name: file to read
     :param end: number pulses to read
     :param bin_num: number of bins
