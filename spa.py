@@ -74,8 +74,8 @@ class SinglePulseAnalysis:
 def main():
     #j0815()
     #b0943()
-    #b1839()
-    b1828()
+    b1839()
+    #b1828()
     print "Bye"
 
 def b1828():
@@ -97,8 +97,9 @@ def b1839():
     #plot.average(s, name_mod="B1839", show=False)
     #plot.single_old(s, name_mod="B1839", show=False)
     #plot.single(s, start=2200, length=200, ph_st=190, ph_end=270, name_mod="B1839", show=True)
+    plot.single(s, length=3000, ph_st=190, ph_end=270, name_mod="B1839", show=True)
     #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
-    plot.p3_evolution(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", show=True)
+    #plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", show=True)
     #plot.p3_evolution(s, end=3004, name_mod="B1839", show=False)
 
 
