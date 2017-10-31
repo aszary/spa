@@ -2,6 +2,39 @@ import os
 
 import numpy as np
 
+def modes(filename, includes=True, mod=1.):
+    """
+        Reads pulsar mode from a file
+
+        Args:
+            filename: ...
+            includes: include or exclude ranges in a mode
+            mod: modify ranges (for instance 0.5 for 2 summed pulses)
+    """
+    print "Reading modes:", filename
+    with open(filename) as f:
+        lines = f.readlines()
+        ranges = np.empty([len(lines), 2], dtype=np.int64)
+        for i, line in enumerate(lines):
+            res = line.split()
+            ranges[i][0] = int(float(res[0]) * mod)
+            ranges[i][1] = int(float(res[1]) * mod)
+
+    if includes is True:
+        modes = np.zeros([ranges[-1][1]+1], dtype=np.int64)
+        for r in ranges:
+            for i in xrange(r[0], r[1]+1, 1):
+                modes[i] = 1
+    else:
+        modes = np.ones([ranges[-1][1]+1], dtype=np.int64)
+        for r in ranges:
+            for i in xrange(r[0], r[1]+1, 1):
+                modes[i] = 0
+
+
+
+
+    return modes
 
 def westerbork(cls, file_name, end=None, bin_num=None, extra_=True):
     """

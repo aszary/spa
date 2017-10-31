@@ -90,16 +90,19 @@ def b1828():
     #plot.folded(s, p3=8, length=660, name_mod="B1828")  # TODO fix it!
 
 
-
 def b1839():
     s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
     s.load('200505521.1380.debase.gg', end=None, type='psrchive') 
+    bright = load.modes("data/bright.txt", includes=True, mod=0.5)
+    quiet = load.modes("data/ignored.txt", includes=False, mod=0.5)
     #plot.average(s, name_mod="B1839", show=False)
     #plot.single_old(s, name_mod="B1839", show=False)
     #plot.single(s, start=2200, length=200, ph_st=190, ph_end=270, name_mod="B1839", show=True)
-    plot.single(s, length=3000, ph_st=190, ph_end=270, name_mod="B1839", show=True)
+    #plot.single(s, length=3000, ph_st=190, ph_end=270, name_mod="B1839", show=True)
     #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
-    #plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", show=True)
+    #plot.single_b1839(s, start=250, length=500, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    plot.single_b1839(s, start=0, length=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
     #plot.p3_evolution(s, end=3004, name_mod="B1839", show=False)
 
 

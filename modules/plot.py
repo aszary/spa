@@ -543,7 +543,7 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
     pl.close()
 
 
-def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
+def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, modes=[], show=True):
     """
     P3 evolution with time, version for B1839
     :param cls: SinglePulseAnalysis class
@@ -555,6 +555,7 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     :param ph_end: phase ending index
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
     :param name_mod: output filename prefix
+    :param modes: [[0...,1], [1,...,0]] tables with defined modes
     :param show: show plot on screen?
     :return:
     """
@@ -601,14 +602,15 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     #print p3_pulse_clean_[-1]
     p3_cont_ = np.zeros([p3_pulse_clean_[-1]+1])
     on_off_ = np.empty([p3_pulse_clean_[-1]+1])
-    on_off_.fill(5.5)
+    on_off_.fill(0)
     for i in xrange(len(p3_pulse_clean_)):
         ind = p3_pulse_clean_[i]
         p3_cont_[ind] = p3_clean_[i]
-        on_off_[ind] = 7.0
+        on_off_[ind] = 1
     #for i in xrange(p3_pulse_clean_[-1]):
     #    on_off_[i] = np.random.ranf()
 
+    # P3 fft
     p3_len = len(p3_cont_)
     freq = np.fft.fftfreq(p3_len, d=1.)[1:p3_len/2]  # one side frequency range
     fft = np.fft.fft(p3_cont_)[1:p3_len/2]  # fft computing
@@ -620,9 +622,23 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     df = fft - fft_on
     df /= np.max(df)
 
+    # modes fft
+    modes_num = len(modes)
+    mfreqs = []
+    mffts = []
+
+    for i in xrange(modes_num):
+        mlen = len(modes[i])
+        mfreqs.append(np.fft.fftfreq(mlen, d=1.)[1:mlen/2])
+        mfft = np.fft.fft(modes[i])[1:mlen/2]  # fft computing
+        mffts.append(np.abs(mfft))
+        mffts[-1] /= np.max(mffts[-1])
+
     average_ = fun.average_profile(np.array(freqs_))
 
     grey = '#737373'
+    cols = ["green", "blue"]
+    labs = ["B-mode", "Q-mode"]
 
     mp.rc('font', size=7.)
     mp.rc('legend', fontsize=7.)
@@ -675,10 +691,15 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     pl.minorticks_on()
     ax = pl.subplot2grid((2, 1), (0, 0))
     pl.errorbar(p3_pulse_clean_,p3_clean_, yerr=p3_err_clean_, color="none", lw=0.1, marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=0.1)
-    pl.scatter(range(0, p3_len), on_off_, c="red", s=0.01, marker=",")
-    pl.xlim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
+    mod = [3.6, 3.8, 4.]
+    #pl.scatter(range(0, p3_len), on_off_, c="red", s=0.01, marker=",")
+    pl.scatter(range(0, p3_len), on_off_*3+mod[2], c="red", s=1.01, marker=",")
     #pl.scatter(range(0, p3_len), p3_cont_, c="red")
     #pl.ylim([5.4, 7.1])  # comment it!
+    for i in xrange(modes_num):
+        pl.scatter(range(0, len(modes[i])), modes[i]*3+mod[i], c=cols[i], s=1.01, marker=",")
+    pl.xlim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
+    pl.ylim([5.5, 7.3])
     pl.ylabel('$P_3$')
 
     ax = pl.subplot2grid((2, 1), (1, 0))
@@ -686,6 +707,9 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     #pl.axvline(x=0.005, color="red")
     pl.plot(freq, fft_on, lw=2, c="red", alpha=0.5, label="on/off")
     pl.plot(freq, fft, lw=1, c="grey", alpha=0.9, label="$P_3$")
+    for i in xrange(modes_num):
+        pl.plot(mfreqs[i], mffts[i], lw=2, c=cols[i], alpha=0.5, label=labs[i])
+
     #pl.plot(freq, df, lw=2, c="black", alpha=0.7, label="$P_3$ - on/off")
     ylims = pl.ylim()
     pl.legend()
@@ -699,6 +723,94 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
 
     pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.svg' % (str(name_mod), start, length)))
     pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    if show is True:
+        pl.show()
+    pl.close()
+
+def single_b1839(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, modes=[], show=True):
+    """
+    plots single pulses (new style)
+    :param cls: SinglePulseAnalysis class
+    :param start: first pulse
+    :param length: number of pulses to use
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param name_mod: output filename prefix
+    :param modes: [[0...,1], [1,...,0]] tables with defined modes
+    :param show: show plot on screen?
+    :return:
+    """
+
+    bins = len(cls.data_[0])
+    size = len(cls.data_)
+    if length is None:
+        length = size - start
+
+    single_ = cls.data_[start:start+length][:]
+    if ph_st is not None:
+        old_len = float(len(single_[0]))
+        ns_ = np.zeros([len(single_), ph_end-ph_st])
+        for i in xrange(len(single_)):
+            ns_[i] = single_[i][ph_st:ph_end]
+        single_ = ns_
+        phase_ = np.linspace(ph_st/old_len*360., ph_end/old_len*360., len(single_[0]))
+        phase_ = fun.zeroed(phase_)
+    else:
+        phase_ = np.linspace(0., 360., len(single_[0]))
+
+    average_ = fun.average_profile(single_)
+    counts_, pulses_ = fun.counts(single_)
+    pulses_ += start
+
+    grey = '#737373'
+    cols = ["green", "blue"]
+    labs = ["B-mode", "Q-mode"]
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.15, bottom=0.08, right=0.99, top=0.99, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((5, 3), (0, 0), rowspan=4)
+    pl.minorticks_on()
+    pl.plot(counts_, pulses_, c=grey)
+    pl.ylim(np.min(pulses_), np.max(pulses_))
+    pl.xlim(1.1, -0.1)
+    pl.xticks([0.1, 0.5, 0.9])
+    pl.xlabel(r'counts')
+    pl.ylabel('Pulse number')
+
+    ax = pl.subplot2grid((5, 3), (0, 1), rowspan=4, colspan=2)
+    #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto')
+    pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto', vmax=np.max(single_))  #, clim=(0., 1.0))
+    pulse_num, ph_num = single_.shape
+    for i, mode in enumerate(modes):
+        for j, m in enumerate(mode):
+            if m == 1:
+                pl.plot([ph_num/2 + 2*i , ph_num/2 +2*i], [j-start-0.3, j-start+0.3], lw=0.5, color=cols[i])
+            if j > (start+pulse_num):
+                break
+
+    #print pulse_num, ph_num, start
+    pl.xticks([], [])
+    ymin, ymax = pl.ylim([0, pulse_num])
+    #pl.yticks([ymin, ymax], [y_min, y_max])
+    pl.tick_params(labelleft=False)
+
+    ax = pl.subplot2grid((5, 3), (4, 1), colspan=2)
+    pl.minorticks_on()
+    pl.plot(phase_, average_, c=grey)
+    x0, x1 = pl.xlim(np.min(phase_), np.max(phase_))
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    pl.tick_params(labeltop=False, labelbottom=True)
+    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_st%d_le%d.pdf' % (str(name_mod), start, length)))
     if show is True:
         pl.show()
     pl.close()
