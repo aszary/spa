@@ -543,6 +543,198 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
     pl.close()
 
 
+def p3_evolution_modes_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, modes=[], show=True):
+    """
+    P3 evolution with time, version for B1839
+    :param cls: SinglePulseAnalysis class
+    :param length: number of pulses to use in lrfs
+    :param start: first pulse
+    :param end: last pulse
+    :param step: get new p3 every X pulses
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param name_mod: output filename prefix
+    :param modes: [[0...,1], [1,...,0]] tables with defined modes
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if end is None:
+        end = len(cls.data_)
+
+    freqs_ = [[[] for i in xrange(end-start)] for m in modes]  # OK [2][pulse_num][]
+    #print freqs_[0][0]
+    #exit()
+    p3_ = [[] for m in modes]
+    p3_err_ = [[] for m in modes]
+    p3_pulse_ = [[] for m in modes]
+    #p3_clean_ = [[] for m in modes]
+    #p3_err_clean_ = [[] for m in modes]
+    #p3_pulse_clean_ = [[] for m in modes]
+
+
+    for i,m in enumerate(modes):
+        # get ranges
+        rngs = []
+        wh = np.where(m==1)[0]
+        st = wh[0]
+        for j in xrange(len(wh) - 1):
+            if wh[j+1] - wh[j] > 1:
+                rngs.append([st, wh[j]])
+                st = wh[j+1]
+
+        for j in xrange(len(rngs)):
+            dr = rngs[j][1] - rngs[j][0]
+            if dr > length:
+                # single pulse data
+                for k in xrange(rngs[j][0], rngs[j][1]-length, step):
+                    single_ = cls.data_[k:k+length][:]
+                    if ph_st is not None:
+                        old_len = float(len(single_[0]))
+                        ns_ = np.zeros([len(single_), ph_end-ph_st])
+                        for j in xrange(len(single_)):
+                            ns_[j] = single_[j][ph_st:ph_end]
+                        single_ = ns_
+                    lrfs_, freq_ = fun.lrfs(single_, None)
+                    counts_, pulses_ = fun.counts(np.abs(lrfs_))
+                    try:
+                        # new approach
+                        p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_, on_fail=1)
+                        if p3 is not None:
+                            p3_[i].append(p3)
+                            p3_err_[i].append(p3_err)
+                            p3_pulse_[i].append(k)
+                    except IndexError:
+                        pass
+                    except ValueError:
+                        pass
+                    fr_num = len(counts_)
+                    for c in counts_:
+                        freqs_[i][k].append(c)
+
+    # fill in with zeros, not very smart!
+    for i in xrange(len(freqs_)):
+        for j in xrange(len(freqs_[0])):
+            if len(freqs_[i][j]) == 0:
+                for k in xrange(fr_num):
+                    freqs_[i][j].append(0.)
+
+    # continous p3
+    p3_cont_ = np.zeros([end-start])
+    on_off_ = np.zeros([end-start])
+    for i in xrange(len(p3_pulse_[1])):
+        ind = p3_pulse_[1][i]
+        p3_cont_[ind] = p3_[1][i]
+        on_off_[ind] = 1.0
+
+    #signal fft
+    p3_len = len(p3_cont_)
+    freq = np.fft.fftfreq(p3_len, d=1.)[1:p3_len/2]  # one side frequency range
+    fft = np.fft.fft(p3_cont_)[1:p3_len/2]  # fft computing
+    fft = np.abs(fft)
+    fft /= np.max(fft)
+
+    # modes fft
+    modes_num = len(modes)
+    mfreqs = []
+    mffts = []
+
+    for i in xrange(modes_num):
+        mlen = len(modes[i])
+        mfreqs.append(np.fft.fftfreq(mlen, d=1.)[1:mlen/2])
+        mfft = np.fft.fft(modes[i])[1:mlen/2]  # fft computing
+        mffts.append(np.abs(mfft))
+        mffts[-1] /= np.max(mffts[-1])
+
+    average_ = fun.average_profile(np.array(freqs_[1]))
+
+    grey = '#737373'
+    cols = ["green", "blue"]
+    labs = ["B-mode", "Q-mode"]
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.17, bottom=0.08, right=0.99, top=0.99, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 3), (0, 0), rowspan=3)
+    pl.minorticks_on()
+    pl.locator_params(axis='x', nbins=4)
+    #pl.plot(p3_, p3_pulse_, c=grey)
+    #pl.errorbar(p3_, p3_pulse_, xerr=p3_err_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
+    for i in xrange(len(p3_)):
+        pl.errorbar(p3_[i], p3_pulse_[i], xerr=p3_err_[i], color="none", lw=1., marker='_', mec=cols[i], ecolor=cols[i], capsize=0., mfc=grey, ms=1.)
+    pl.ylim(0, end-start)
+    pl.ylabel('start period no.')
+    pl.xlabel('$P_3$')
+
+    ax = pl.subplot2grid((4, 3), (0, 1), rowspan=3, colspan=2)
+    pl.imshow(freqs_[1], origin="lower", cmap=cmap, interpolation='none', aspect='auto')  # , vmax=700.5)
+    pl.xticks([], [])
+    #pl.grid(color="white")
+    #pl.axvline(x=14., lw=1., color="white")
+    ymin, ymax = pl.ylim()
+    #pl.yticks([ymin, ymax], [y_min, y_max])
+    pl.tick_params(labelleft=False)
+
+    ax = pl.subplot2grid((4, 3), (3, 1), colspan=2)
+    pl.minorticks_on()
+    pl.plot(freq_, average_, c=grey)
+    x0, x1 = pl.xlim(freq_[0], freq_[-1])
+    y0, y1 = pl.ylim()
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.xlabel('frequency [$1/P$]')
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_modes_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_modes_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    if show is True:
+        pl.show()
+    pl.close()
+
+    pl.figure()
+    pl.minorticks_on()
+    ax = pl.subplot2grid((2, 1), (0, 0))
+    for i in xrange(len(p3_)):
+        pl.errorbar(p3_pulse_[i],p3_[i], yerr=p3_err_[i], color="none", lw=0.1, marker='_', mec=cols[i], ecolor=cols[i], capsize=0., mfc=grey, ms=0.1)
+    mod = [3.6, 3.8, 4.]
+    #pl.ylim([5.4, 7.1])  # comment it!
+    for i in xrange(modes_num):
+        pl.scatter(range(0, len(modes[i])), modes[i]*3+mod[i], c=cols[i], s=1.01, marker=",")
+    pl.xlim(start, end-start)
+    pl.ylim([5.5, 7.3])
+    pl.ylabel('$P_3$')
+
+    ax = pl.subplot2grid((2, 1), (1, 0))
+    pl.minorticks_on()
+    #pl.axvline(x=0.005, color="red")
+    #pl.plot(freq, fft_on, lw=2, c="red", alpha=0.5, label="on/off")
+    pl.plot(freq, fft, lw=1, c="grey", alpha=0.9, label="$P_3$")
+    for i in xrange(modes_num):
+        pl.plot(mfreqs[i], mffts[i], lw=2, c=cols[i], alpha=0.5, label=labs[i])
+
+    #pl.plot(freq, df, lw=2, c="black", alpha=0.7, label="$P_3$ - on/off")
+    ylims = pl.ylim()
+    pl.legend()
+
+    pl.text(0.0025, ylims[0] + 0.85*(ylims[1]-ylims[0]), "0.0025")
+    pl.text(0.005, ylims[0] + 0.8*(ylims[1]-ylims[0]), "0.005")
+    pl.text(0.0007, ylims[0] + 0.95*(ylims[1]-ylims[0]), "0.0007")
+    #pl.text(0.008, ylims[0] + 0.4*(ylims[1]-ylims[0]), "0.008")
+    pl.xlim([0., 0.05])
+    pl.xlabel('frequency [$1/P$]')
+
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_modes_st%d_le%d.svg' % (str(name_mod), start, length)))
+    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_modes_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    if show is True:
+        pl.show()
+    pl.close()
+
+
 def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, modes=[], show=True):
     """
     P3 evolution with time, version for B1839

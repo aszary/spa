@@ -101,8 +101,9 @@ def b1839():
     #plot.single(s, length=3000, ph_st=190, ph_end=270, name_mod="B1839", show=True)
     #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
     #plot.single_b1839(s, start=250, length=500, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    plot.single_b1839(s, start=0, length=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    #plot.single_b1839(s, start=0, length=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    #plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    plot.p3_evolution_modes_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
     #plot.p3_evolution(s, end=3004, name_mod="B1839", show=False)
 
 
