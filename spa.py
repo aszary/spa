@@ -7,6 +7,7 @@ import numpy as np
 
 import modules.load as load
 import modules.plot as plot
+import modules.generate as generate
 
 
 class SinglePulseAnalysis:
@@ -72,23 +73,18 @@ class SinglePulseAnalysis:
 
 
 def main():
+    #test_p3()
+    b1839()
     #j0815()
     #b0943()
-    b1839()
     #b1828()
     print "Bye"
 
-def b1828():
-    s = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/B1828-11/')
-    s.load('2007-04-12-11:17:02.ar', end=None, type='psrchive')
-    #plot.average(s, name_mod="B1828", show=False)
-    #plot.single_old(s, name_mod="B1828", show=False)
-    #plot.single(s, name_mod="B1828", show=True)
-    #plot.lrfs(s, length=256, name_mod="B1828", show=False)
-    plot.p3_evolution(s, length=128, step=1, start=0, name_mod="B1828", show=True)
-    #plot.p3_evolution(s, name_mod="B1828", show=False)
-    #plot.folded(s, p3=8, length=660, name_mod="B1828")  # TODO fix it!
-
+def test_p3():
+    s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
+    #s.load('200505521.1380.debase.gg', end=None, type='psrchive') 
+    s.data_ = generate.step_function()
+    #plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=1000, name_mod="test", show=True)
 
 def b1839():
     s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
@@ -102,9 +98,21 @@ def b1839():
     #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
     #plot.single_b1839(s, start=250, length=500, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
     #plot.single_b1839(s, start=0, length=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    #plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    plot.p3_evolution_modes_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    #plot.p3_evolution(s, end=3004, name_mod="B1839", show=False)
+    plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    #plot.p3_evolution_modes_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
+    #plot.p3_evolution(s, end=3004, name_mod="B1839", show=True)
+
+
+def b1828():
+    s = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/B1828-11/')
+    s.load('2007-04-12-11:17:02.ar', end=None, type='psrchive')
+    #plot.average(s, name_mod="B1828", show=False)
+    #plot.single_old(s, name_mod="B1828", show=False)
+    #plot.single(s, name_mod="B1828", show=True)
+    #plot.lrfs(s, length=256, name_mod="B1828", show=False)
+    plot.p3_evolution(s, length=128, step=1, start=0, name_mod="B1828", show=True)
+    #plot.p3_evolution(s, name_mod="B1828", show=False)
+    #plot.folded(s, p3=8, length=660, name_mod="B1828")  # TODO fix it!
 
 
 def b0943():

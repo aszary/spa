@@ -5,7 +5,8 @@ from copy import deepcopy
 
 import numpy as np
 import sympy as sy
-from interpolate import least_sq_err
+from scipy.optimize import leastsq
+from interpolate import least_sq_err, least_sq
 
 from functions import Functions
 F = Functions()
@@ -308,7 +309,20 @@ def get_maxima(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
                     """
     return max_x_, max_y_
 
-def get_p3(signal, x, on_fail=0):
+
+def get_p3_simple(signal, x, on_fail=0):
+    base = pk.baseline(signal)
+    signal -= base
+    pind = pk.indexes(signal, min_dist=len(signal))
+    freq = [x[pind[0]]]
+    err = [0.005]  # not now
+    p3 = 1. / freq[0]
+    p3_err = p3 - (1. / (freq[0] + err[0]))
+    p3_err2 = (1. / (freq[0] - err[0])) - p3
+    return p3, np.max([p3_err, p3_err2]), pind[0]
+
+
+def get_p3_old(signal, x, on_fail=0):
     base = pk.baseline(signal)
     signal -= base
     pind = pk.indexes(signal, min_dist=len(signal))
@@ -341,7 +355,225 @@ def get_p3(signal, x, on_fail=0):
     #print np.max([p3_err, p3_err2])
     return p3, np.max([p3_err, p3_err2]), pind[0]
 
-def get_p3_rahuls(signal, freq, thres=5, secs=5):
+
+def f(v, x):
+    res = v[0] * np.exp(-0.5*((x-v[1]) / v[2]) ** 2)
+    return res
+
+def f2(v, x):
+    res = v[0] * np.exp(-0.5*((x-v[1]) / v[2]) ** 2) + v[3] * np.exp(-0.5*((x-v[4]) / v[5]) ** 2)
+    return res
+
+
+def get_p3(signal, x, thres=0.3):
+    base = pk.baseline(signal)
+    signal -= base
+    # find peaks
+    pind = pk.indexes(signal, thres=thres)
+    freq_num = len(pind)
+
+    if freq_num == 0:
+        print "Warning! No maximum found: ignored"
+        return None, None, None
+    if freq_num == 1:
+        ind = pind[0]
+        # crude width estimate
+        mx = signal[ind]
+        val = mx
+        while val >= 0.5 *mx:
+            ind += 1
+            val = signal[ind]
+        width = 2*(ind - pind[0])  # 4.71 sigma
+        #print "Width", width, pind[0]
+        st = np.max([0, pind[0]-width])
+        end = np.min([len(x), pind[0]+width])
+        # gaussian fit
+        v0 = [signal[pind[0]], x[pind[0]], (x[pind[0] + width] - x[pind[0]]) / 3.]
+        ## Error function
+        errfunc = lambda v, x, y: (f(v, x) - y)
+        res = leastsq(errfunc, v0, args=(np.array(x[st:end]), np.array(signal[st:end])), maxfev=1000, full_output=False)
+        v = res[0]
+        #print v[1], freq[0]
+        freq = v[1]
+        err = v[2]
+    elif freq_num == 2:
+        # crude widths estimate
+        widths = []
+        sts = []
+        ends = []
+        for i, index in enumerate(pind):
+            mx = signal[index]
+            val = mx
+            ind = index
+            while val >= 0.5 * mx:
+                ind += 1
+                try:
+                    val = signal[ind]
+                except IndexError:
+                    ind = len(signal) - 1
+                    break
+            width = 2 * (ind - index)  # 4.71 sigma
+            if index + width >= len(signal):
+                width = len(signal) - index - 1
+            if index - width < 0:
+                width = index
+            widths.append(width)
+            #print "Width", width, pind[i]
+            st = np.max([0, pind[i] - width])
+            end = np.min([len(x), pind[i] + width])
+            sts.append(st)
+            ends.append(end)
+        st = np.min(sts)
+        end = np.max(ends)
+        #print st, end, len(x), len(signal), widths[0], widths[1]
+        v0 = [signal[pind[0]], x[pind[0]], (x[pind[0] + widths[0]] - x[pind[0]]) / 3., signal[pind[1]], x[pind[1]], (x[pind[1] + widths[1]] - x[pind[1]]) / 3.]
+        ## Error function
+        errfunc = lambda v, x, y: (f2(v, x) - y)
+        try:
+            res = leastsq(errfunc, v0, args=(np.array(x[st:end]), np.array(signal[st:end])), maxfev=1000, full_output=False)
+        except TypeError:
+            print "Warning! Gaussian fit error: ignored"
+            return None, None, None
+        v = res[0]
+        if v[0] > v[3]:
+            freq = v[1]
+            err = v[2]
+        else:
+            freq = v[4]
+            err = v[5]
+
+        """
+        xx = np.linspace(x[st], x[end], num=100)
+        ga = f2(v0, xx)
+        ga2 = f2(v, xx)
+        from matplotlib import pyplot as pl
+        pl.plot(x[st:end], signal[st:end])
+        pl.plot(xx, ga)
+        pl.plot(xx, ga2)
+        pl.show()
+        """
+        print "Warning! Two maxima found: higher used..."
+    else:
+        print "Warning! More than two maxima found: ignored"
+        return None, None, None
+
+    p3 = 1. / freq
+    p3_err = p3 - (1. / (freq + err))
+    p3_err2 = (1. / (freq - err)) - p3
+    return p3, np.max([p3_err, p3_err2]), pind[0]
+
+
+
+def get_p3_backup(signal, x, on_fail=0):
+
+    base = pk.baseline(signal)
+    signal -= base
+    # find peaks
+    pind = pk.indexes(signal)    #, min_dist=len(signal))  -> only one peak
+    print len(pind)
+    try:
+        ind = pind[0]
+    except:
+        print "Warning! No maximum found: ignored"
+        return None, None, None
+    # crude width estimate
+    mx = signal[ind]
+    val = mx
+    while val >= 0.5 *mx:
+        ind += 1
+        val = signal[ind]
+    width = 2*(ind - pind[0])  # 4.71 sigma
+    #print "Width", width, pind[0]
+    st = np.max([0, pind[0]-width])
+    end = np.min([len(x), pind[0]+width])
+
+    #print "st", st, "end", end
+
+    """
+    # TODO start with this test!
+    # frequency measurment
+    freq = pk.interpolate(x, signal, ind=[pind[0]], width=np.min([width, pind[0]]), func=pk.gaussian_fit)
+    # gaussian fit
+    v0 = [signal[pind[0]], x[pind[0]], (x[pind[0] + width] - x[pind[0]]) / 3.]
+    #y_new, v, errs = fun.least_sq_err(x[st:end], signal[st:end], f, v0, show=True)
+    ## Error function
+    errfunc = lambda v, x, y: (f(v, x) - y)
+    res = leastsq(errfunc, v0, args=(np.array(x[st:end]), np.array(signal[st:end])), maxfev=1000, full_output=True)
+
+    v = res[0]
+    print res
+
+    xx = np.linspace(x[st], x[end], num=100)
+    ga = f(v0, xx)
+    ga2 = f(v, xx)
+
+    from matplotlib import pyplot as pl
+    pl.plot(x[st:end], signal[st:end])
+    pl.plot(xx, ga)
+    pl.plot(xx, ga2)
+    pl.show()
+
+    print f(v0, x[pind[0]]), signal[pind[0]]
+    print v
+    print f(v, x[pind[0]]), signal[pind[0]]
+    exit()
+    """
+
+    try:
+        # frequency measurment
+        freq = pk.interpolate(x, signal, ind=[pind[0]], width=np.min([width, pind[0]]), func=pk.gaussian_fit)
+        # gaussian fit
+        v0 = [signal[pind[0]], x[pind[0]], (x[pind[0] + width] - x[pind[0]]) / 3.]
+        #y_new, v, errs = fun.least_sq_err(x[st:end], signal[st:end], f, v0, show=True)
+        ## Error function
+        errfunc = lambda v, x, y: (f(v, x) - y)
+        res = leastsq(errfunc, v0, args=(np.array(x[st:end]), np.array(signal[st:end])), maxfev=1000, full_output=False)
+        v = res[0]
+        #print v[1], freq[0]
+        freq = v[1]
+        err = v[2]
+        #params = pk.gaussian_fit(x[st:end], signal[st:end], center_only=False)
+        #err = [params[2]]
+    except:
+        if on_fail == 0:
+            print 'Warning! Gaussian fit failed: ignored!'
+            return None, None, None
+        else:
+            print 'Warning! Gaussian fit failed: ignored!'
+            return None, None, None  # not implemented yet
+
+    p3 = 1. / freq
+    """
+    if p3 < 12:
+
+        xx = np.linspace(x[st], x[end], num=100)
+        ga = f(v0, xx)
+        ga2 = f(v, xx)
+
+        from matplotlib import pyplot as pl
+        pl.plot(x[st:end], signal[st:end])
+        pl.plot(xx, ga)
+        pl.plot(xx, ga2)
+        pl.show()
+
+        nx = np.linspace(0, 0.5, num=500)
+        ga = pk.gaussian(nx, v[0], v[1], v[2] )
+        from matplotlib import pyplot as pl
+        pl.close()
+        pl.plot(x, signal)
+        pl.plot(nx, ga, color="green")
+        pl.axvline(x=freq[0], color="red")
+        pl.axvline(x=x[pind[0]], color="blue")
+        pl.show()
+        pl.close()
+    #"""
+    p3_err = p3 - (1. / (freq + err))
+    p3_err2 = (1. / (freq - err)) - p3
+    #print np.max([p3_err, p3_err2])
+    return p3, np.max([p3_err, p3_err2]), pind[0]
+
+
+def get_p3_rahuls(signal, freq, thres=5., secs=5):
     sns = np.array_split(signal, secs)
 
     mean_ = np.zeros(secs)
@@ -371,7 +603,7 @@ def get_p3_rahuls(signal, freq, thres=5, secs=5):
 
     fp = np.sum(vtf_) / np.sum(v_)
     p3 = 1. / fp
-    return p3, 1.
+    return p3, 0.01, 0
 
 
 def fit_lines(xs_, ys_, rngs=None):
@@ -484,6 +716,21 @@ def get_theta(r, x, y, r_x, r_y):
     """
     #print np.arccos((x - r_x) / r), np.arcsin((y - r_y) / r), np.arctan(y/x-r_y/r_x), np.arctan2(y-r_y, x-r_x)
     return np.arctan2(y-r_y, x-r_x)
+
+def average_profile_soft(prof_):
+    prof_ = np.array(prof_)
+    #yl, xl = prof_.shape
+    yl = len(prof_)
+    min_ = len(prof_[0])
+    for i in xrange(yl):
+        if len(prof_[i]) < min_:
+            min_ = len(prof_[i])
+    xl = min_
+    ave_ = np.zeros(xl)
+    for i in xrange(yl):
+        for j in xrange(xl):
+            ave_[j] += prof_[i][j]
+    return ave_
 
 
 def average_profile(prof_):

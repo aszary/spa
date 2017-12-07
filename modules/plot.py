@@ -421,21 +421,16 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
             single_ = ns_
         lrfs_, freq_ = fun.lrfs(single_, None)
         counts_, pulses_ = fun.counts(np.abs(lrfs_))
-        try:
-            # new approach
-            p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_, on_fail=1)
-            if p3 is not None:
-                p3_.append(p3)
-                p3_err_.append(p3_err)
-                p3_pulse_.append(i)
-                if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
-                    p3_clean_.append(p3)
-                    p3_err_clean_.append(p3_err)
-                    p3_pulse_clean_.append(i)
-        except IndexError:
-            pass
-        except ValueError:
-            pass
+        # new approach
+        p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_)
+        if p3 is not None:
+            p3_.append(p3)
+            p3_err_.append(p3_err)
+            p3_pulse_.append(i + length / 2)
+            if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
+                p3_clean_.append(p3)
+                p3_err_clean_.append(p3_err)
+                p3_pulse_clean_.append(i + length / 2)
         freqs_.append(counts_)
 
     # continous p3
@@ -598,17 +593,13 @@ def p3_evolution_modes_b1839(cls, length=256, start=0, end=None, step=5, ph_st=N
                         single_ = ns_
                     lrfs_, freq_ = fun.lrfs(single_, None)
                     counts_, pulses_ = fun.counts(np.abs(lrfs_))
-                    try:
-                        # new approach
-                        p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_, on_fail=1)
-                        if p3 is not None:
-                            p3_[i].append(p3)
-                            p3_err_[i].append(p3_err)
-                            p3_pulse_[i].append(k)
-                    except IndexError:
-                        pass
-                    except ValueError:
-                        pass
+                    p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_)
+                    #p3, p3_err, max_ind = fun.get_p3_rahuls(counts_, freq_)
+                    #p3, p3_err, max_ind = fun.get_p3_simple(counts_, x=freq_)
+                    if p3 is not None:
+                        p3_[i].append(p3)
+                        p3_err_[i].append(p3_err)
+                        p3_pulse_[i].append(k + length / 2)
                     fr_num = len(counts_)
                     for c in counts_:
                         freqs_[i][k].append(c)
@@ -773,21 +764,17 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
             single_ = ns_
         lrfs_, freq_ = fun.lrfs(single_, None)
         counts_, pulses_ = fun.counts(np.abs(lrfs_))
-        try:
-            # new approach
-            p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_, on_fail=1)
-            if p3 is not None:
-                p3_.append(p3)
-                p3_err_.append(p3_err)
-                p3_pulse_.append(i)
-                if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
-                    p3_clean_.append(p3)
-                    p3_err_clean_.append(p3_err)
-                    p3_pulse_clean_.append(i)
-        except IndexError:
-            pass
-        except ValueError:
-            pass
+        p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_)
+        #p3, p3_err, max_ind = fun.get_p3_rahuls(counts_, freq_)
+        #p3, p3_err, max_ind = fun.get_p3_simple(counts_, x=freq_, on_fail=1)
+        if p3 is not None:
+            p3_.append(p3)
+            p3_err_.append(p3_err)
+            p3_pulse_.append(i + length/2)
+            if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
+                p3_clean_.append(p3)
+                p3_err_clean_.append(p3_err)
+                p3_pulse_clean_.append(i + length/2)
         freqs_.append(counts_)
 
     # continous p3
@@ -850,7 +837,7 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     pl.ylim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
     #pl.locator_params(nbins=3)
     #pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
-    #pl.xlim([5.4, 7.1])   # comment this hack!
+    #pl.xlim([5.5, 7.25])   # comment this hack!
     #pl.xticks([15, 17, 19])
     pl.ylabel('start period no.')
     pl.xlabel('$P_3$')
