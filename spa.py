@@ -33,11 +33,13 @@ class SinglePulseAnalysis:
 
     def plot_all(self):
         plot.average(self)
-        plot.single_old(self)
-        plot.single(self)
+        #plot.single_old(self)
+        #plot.single(self, start=200, length=100)
+        plot.single(self, start=0, length=len(self.data_))
         plot.lrfs(self)
-        plot.folded(self, p3=16.7, length=300)
-        plot.p3_evolution(self)
+        plot.folded(self, p3=16.7)
+        #plot.folded(self, p3=16.7, start=700, length=800)
+        plot.p3_evolution(self, step=1)  #, start=6200)
 
     def run1(self, files, num=0):
         """
@@ -74,8 +76,9 @@ class SinglePulseAnalysis:
 
 def main():
     #test_p3()
-    b1839()
+    #b1839()
     #j0815()
+    j0815_rankin()
     #b0943()
     #b1828()
     print "Bye"
@@ -122,16 +125,19 @@ def b0943():
     s3 = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/0943+10/')
     s3.runs(files)
 
-
-def j0815():
-    s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/')
-    s.load('sJ0815+0939.54015ap', end=None, type='westerbork4')
-    #s.load('test.dat', end=1000, type='psrchive')  # TODO not implemented yet
+def j0815_rankin():
+    s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/Arecibo/')
+    s.load('sJ0815+0939.54782ap.128bins', end=None, type='westerbork4')  # best?
+    #s.load('sJ0815+0939.55937pa', end=None, type='westerbork4')  # not bad
     s.plot_all()
 
+def j0815():
+    s = SinglePulseAnalysis(data_dir='/data/szary/J0815+0939/data/p1769')
+    s.load('0815.53161.puma.339.asc', end=None, type='westerbork')
+    s.plot_all()
+
+
     files = ['./20111105/B0943+10_L33341_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111107/B0943+10_L33339_RSP0.PrepsubbNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111127/B0943+10_L35621_RSP0.PrepsubbZerodmNoclip_DM15.31.puma.119.gg.1pol.asc','./20111201/B0943+10_L36159_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111204/B0943+10_L36157_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111221/B0943+10_L39707_RSP0.ZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20120111/B0943+10_L42350_RSP0.PrepdataNoclip.1.puma.119.gg.1pol.asc']
-
-
 
 if __name__ == "__main__":
     main()

@@ -427,7 +427,7 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
             p3_.append(p3)
             p3_err_.append(p3_err)
             p3_pulse_.append(i + length / 2)
-            if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
+            if p3 is not None:# nope p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
                 p3_clean_.append(p3)
                 p3_err_clean_.append(p3_err)
                 p3_pulse_clean_.append(i + length / 2)
