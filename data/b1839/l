@@ -1,0 +1,131 @@
+Program to analyse (folded) single pulse data using mostly Fourier techniques.
+It is assumed the data contains a single pulse in each subint and that the
+baseline is subtracted (use pmod -debase).
+
+pspec [options] inputfile
+
+General Input/Output options:
+  -formatlist       Show supported file formats
+  -iformat id       Specify input format (e.g.  -iformat PSRFITS)
+  -oformat id       Specify output format (e.g. -oformat PSRFITS)
+  -headerlist       Show available parameters for the -header option
+  -header           Change header parameter, e.g. -header 'name J0123+4567'
+
+General preprocess options:
+  -nskip n        Skip n subintegrations in input data (default is 0)
+  -nread n        Use n subintegrationss in input data (default is all)
+  -rebin n        Rebin to n bins (not necessarily a power of two)
+  -conshift       When applying rotations (-rot or -rotdeg), instead of rotating
+                  subints independent of each other, rotate the end of one
+                  subint to the start of another. One subint will be lost.
+  -circshift      idem, but makes the last subint spill over in the first.
+                  No subints will be lost.
+  -rot ph         Rotate each individual subint by ph pulse phase
+  -rotdeg ph      ditto, but in degrees
+  -shuffle        Shuffle the subints in a random order
+
+General plotting options:
+  -itf n        Set image transfer function for colour map plots
+                (0=linear (default), 1=logarithmic, 2=square-root)
+
+General data selection options:
+  -onpulse      "left right" manually select on-pulse regions (in bins)
+  -onpulsef     "left right" manually select on-pulse regions (in phase)
+
+Other general options:
+  -v            Verbose mode (to get a better idea what is happening)
+  -debug        Enable more output (where implemented)
+  -nocounters   Don't show counters etc (useful when generating log files)
+  -libversions  Show version information about libraries used by psrsalsa
+
+General options:
+  -nfft               Set size of fft's [default=512].
+  -powertwo           When manually selecting onpulse regions, they are forced
+                      to be a power of two bins wide.
+  -w                  Write out the results to files.
+  -bootstrap          Find error bars on the standard deviation, modulation
+                      index and subpulse phase by random adding noise to the
+                      data. This will be done for the specified number of times
+                      (larger value will be more precise, but takes longer). The
+                      error bars (although somewhat overestimated) are more
+                      accurate than the analytic approximation used by default.
+
+Output options:
+  -prof               Compute pulse profile.
+  -lrfs               Compute LRFS.
+  -DC                 Leave the DC channel in the LRFS.
+  -stddev             Compute standard deviation profile.
+  -stddev_sigma       Specify sigma threshold for the stddev output to file.
+                      The plot (shown with -prof) only shows 3 sigma detections.
+  -mod                Compute modulation index profile.
+  -mod_sigma          Specify sigma threshold for the mod. index output to file.
+                      The plot (shown with -prof) only shows 3 sigma detections.
+  -track              Compute subpulse phase track (use with -freq).
+  -track_dphase       Add specified offset (in deg) to the subpulse phase track.
+  -track_firstregion  Only use the first selected onpulse region to find the
+                      alignments of the phases of the different fft blocks.
+                      The other onpulse regions are still used to subtract from
+                      the LRFS from which the phases are derived.
+  -slope              Subtract slope from subpulse phases (in degrees subpulse
+                      phase per degree pulse longitude).
+  -amplitude          Compute modulation amplitude (use with -freq).
+  -2dfs               Compute 2DFS.
+  -s2dfs_p3           Compute S2DFS (sliding 2DFS P3 map).
+  -s2dfs_p2           Compute S2DFS (sliding 2DFS P2 map)
+                      (for first selected region only).
+  -freq               Define which fluctuation frequencies (in cpp) are used for
+                      the subpulse phase track/amplitude calculation
+  -p3fold             "P3 n": Fold the data using this P3 value in pulse
+                      periods and the P3 cycle is divided in n bins in the final
+                      result. If n > P3, the different bins are not independent
+                      and you might want to use -p3fold_smooth option to make
+                      the effective resolution equal to P3.
+  -p3fold_dphase      Add this subpulse phase in degrees (can also use -slope).
+  -p3fold_norefine    Do not attemt to align subsequent blocks, i.e. fixed
+                      period folding
+  -p3fold_nritt       Set the number of itterations, which produces a template
+                      first thereby producing better results. Default is 1.
+  -p3fold_cpb         Set the number of cycles per block used in the cross
+                      correlation used to compensate for P3 variations. More
+                      means more signal to correlate (more precise alignment of
+                      the blocks, less means less smearing in each block because
+                      of P3 variation within the block. Default is 1.
+  -p3fold_smooth      Replace the tophat weight used to assign power to the P3
+                      bins with a Gausian weight with this width in pulse
+                      periods. This could make oversampling look nicer and
+                      reduce the effective resolution. Example: if P3=10P, you
+                      could set n in the -p3fold option to 20, resulting in
+                      oversampling with a factor 2. By setting -p3fold_smooth
+                      to 2, the effective resolution is reduced by a factor 2
+                      because each input pulse is smeared out with this width
+                      in pulse periods.
+  -p3fold_noonpulse   Ignore selected pulse longitude range, but use the full
+                      range when doing the cross correlations
+  -p2zap              "P2min P2max" Zap fluctuations in this P2 range in cpp.
+  -p3zap              "P3min P3max" Zap fluctuations in this P3 range.
+                      P3min and P3max can be specified as bins or in cpp.
+
+Graphics options:
+  -onpulsed           Set pgplot device for the selection of the onpulse region.
+  -profd              Set pgplot device for the pulse profile.
+  -lrfsd              Set pgplot device for the LRFS.
+  -trackd             Set pgplot device for the subpulse phase.
+  -amplituded         Set pgplot device for the modulation amplitude.
+  -2dfsd              Set pgplot device for the 2DFS.
+  -s2dfs_p3d          Set pgplot device for the S2DFS (P3 map).
+  -s2dfs_p2d          Set pgplot device for the S2DFS (P2 map).
+  -p3foldd            Set pgplot device for the P3 fold map.
+  -onpulsegr          Enables graphical selection of additional on-pulse regions
+                      to those defined with the -onpulse option.
+
+Please use the appropriate citation when using results of this software in your publications:
+
+More information about the lrfs/2dfs/modulation index can be found in:
+ - Weltevrede et al. 2006, A&A, 445, 243
+ - Weltevrede et al. 2007, A&A, 469, 607
+More information about bootstrap/subpulse phase track & amplitude can be found in:
+ - Weltevrede et al. 2012, MNRAS, 424, 843
+More information about the sliding 2dfs can be found in:
+ - Serylak et al. 2009, A&A, 506, 865
+
+If you make use of PSRSALSA, please cite "Weltevrede 2016, A&A, 590, A109" and refer to the following website: https://github.com/weltevrede/psrsalsa

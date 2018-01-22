@@ -74,8 +74,8 @@ class SinglePulseAnalysis:
 
 def main():
     #test_p3()
-    #b1839()
-    j0815()
+    b1839()
+    #j0815()
     #j0815_rankin()
     #b0943()
     #b1828()
@@ -89,20 +89,54 @@ def test_p3():
 
 def b1839():
     s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
-    s.load('200505521.1380.debase.gg', end=None, type='psrchive') 
-    bright = load.modes("data/bright.txt", includes=True, mod=0.5)
-    quiet = load.modes("data/ignored.txt", includes=False, mod=0.5)
-    #plot.average(s, name_mod="B1839", show=False)
-    #plot.single_old(s, name_mod="B1839", show=False)
-    #plot.single(s, start=2200, length=200, ph_st=190, ph_end=270, name_mod="B1839", show=True)
-    #plot.single(s, length=3000, ph_st=190, ph_end=270, name_mod="B1839", show=True)
-    #plot.lrfs(s, length=256, start=2320, ph_st=190, ph_end=270, name_mod="B1839", show=False)
-    #plot.single_b1839(s, start=250, length=500, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    #plot.single_b1839(s, start=0, length=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    plot.p3_evolution_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    #plot.p3_evolution_modes_b1839(s, length=128, step=1, start=0, end=3004, ph_st=190, ph_end=270, name_mod="B1839", modes=[bright, quiet], show=True)
-    #plot.p3_evolution(s, end=3004, name_mod="B1839", show=True)
+    bright = load.modes("data/bright.txt", includes=True, mod=1.0)
+    quiet = load.modes("data/ignored.txt", includes=False, mod=1.0)
+    #s.load('200505521.1380.debase.gg', end=None, type='psrchive')
 
+    # 2003
+    #s.load('200309159.1380.singlepulse.gg', end=None, type='psrchive')
+    #plot.average(s, name_mod="1_B1839", show=False)
+    #plot.single(s, start=0, length=1025, ph_st=0, ph_end=55, name_mod="1_B1839", show=True)
+    #plot.lrfs(s, length=512, start=250, ph_st=0, ph_end=55, name_mod="1_B1839", show=False)
+    #plot.folded(s, p3=12.2910488557, start=370, length=100, ph_st=0, ph_end=55, name_mod="1_B1839", ybins=24)
+    #plot.folded(s, p3=12.2910488557, start=0, length=700, ph_st=0, ph_end=55, name_mod="_B1839", ybins=24)
+    #plot.p3_evolution_b1839(s, length=256, step=1, start=0, ph_st=0, ph_end=55, name_mod="1_B1839", exp_range=(10,15), show=True)
+
+    # 2005-05(521)
+    #s.load('200505521.1380.singlepulse.gg', end=None, type='psrchive')  # best
+    #plot.average(s, name_mod="2_B1839", show=False)
+    #plot.single(s, start=0, length=6008, ph_st=190, ph_end=270, name_mod="2_B1839", show=True)
+    #plot.lrfs(s, length=400, start=0, ph_st=190, ph_end=270, name_mod="2_B1839", show=False)
+    #plot.folded(s, p3=12.13594191, start=0, length=400, ph_st=190, ph_end=270, name_mod="2_B1839", ybins=24)
+    #plot.folded(s, p3=12.13594191, start=0, length=1000, ph_st=190, ph_end=270, name_mod="_B1839", ybins=24)
+    #plot.folded_fit(s, p3=12.13594191, start=0, length=400, ph_st=190, ph_end=270, times=1, name_mod="2_B1839", ybins=24, pthres=0.5, rngs=[(8,27), (5, 23)])
+    #plot.folded_fitseq(s, p3=12.13594191, start=0, length=400, ph_st=190, ph_end=270, times=2, name_mod="2_B1839", ybins=24, pthres=0.5)
+    #plot.p3_evolution_b1839(s, length=256, step=1, start=0, ph_st=190, ph_end=270, name_mod="2_B1839", exp_range=(10,15), modes=[bright, quiet], show=True)
+
+    # 2005-05(598)
+    #s.load('200505598.1380.singlepulse.gg', end=None, type='psrchive')  # nice? 250-500
+    #plot.average(s, name_mod="3_B1839", show=False)
+    #plot.single(s, start=0, length=2162, ph_st=200, ph_end=275, name_mod="3_B1839", show=True)
+    #plot.lrfs(s, length=240, start=240, ph_st=200, ph_end=275, name_mod="3_B1839", show=False)
+    #plot.folded(s, p3=12.2771528066, start=240, length=240, ph_st=200, ph_end=275, name_mod="3_B1839", ybins=24)
+    #plot.p3_evolution_b1839(s, length=256, step=1, start=0, ph_st=200, ph_end=275, name_mod="3_B1839", exp_range=(10,15), show=True)
+
+    # 2005-05(769)
+    #s.load('200505769.1380.singlepulse.gg', end=None, type='psrchive')  # nice 1530-1970
+    #plot.average(s, name_mod="4_B1839", show=False)
+    #plot.single(s, start=0, length=4378, ph_st=0, ph_end=80, name_mod="4_B1839", show=True)
+    #plot.lrfs(s, length=440, start=1530, ph_st=0, ph_end=80, name_mod="4_B1839", show=False)
+    #plot.folded(s, p3=12.2771528066, start=1530, length=440, ph_st=0, ph_end=80, name_mod="4_B1839", ybins=24)
+    #plot.p3_evolution_b1839(s, length=256, step=1, start=0, ph_st=0, ph_end=80, name_mod="4_B1839", exp_range=(10,15), show=True)
+
+
+    s.data_dir = "data"
+    s.load('b1839.p3fold', end=None, type='psrchive')
+    #plot.average(s, start=0, name_mod="X_B1839", show=True)
+    #plot.single(s, start=0, ph_st=190, ph_end=270, name_mod="X_B1839", show=True)
+    #plot.prefolded(s, start=0, ph_st=190, ph_end=270, name_mod="X_B1839")
+    #plot.prefolded_fit(s, start=0, ph_st=190, ph_end=270, pthres=0.1, times=3, darkness=0.5, name_mod="X3_B1839")
+    plot.prefolded_fitseq(s, start=0, ph_st=190, ph_end=270, pthres=0.1, times=3, darkness=0.5, name_mod="X3_B1839")
 
 def b1828():
     s = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/B1828-11/')
@@ -136,7 +170,7 @@ def j0815():
     #plot.single(s, start=320, length=520)
     #plot.lrfs(s, start=320, length=520)
     #plot.folded(s, p3=16.7, start=320, length=520)
-    plot.p3_evolution(s, step=1, length=128)  #, start=6200)
+    plot.p3_evolution(s, step=1, length=128, name_mod=1)  #, start=6200)
     #s.plot_all()
 
 

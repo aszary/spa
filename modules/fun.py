@@ -249,7 +249,7 @@ def get_single_pulses(pulses, ratio=4./3.):
     y_max = int(i/ym)
     return profile_, y_max
 
-def get_maxima(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
+def get_maxima_old(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
     max_x_ = []
     max_y_ = []
     for i in xrange(comp_num):
@@ -300,6 +300,9 @@ def get_maxima(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
                     else:
                         max_x_[j].append(new_ind[0] + j * (ns+1))
                         max_y_[j].append(i)
+                    import matplotlib.pyplot as pl
+                    pl.plot(sm_[i][j])
+                    pl.show()
                 else:
                     pass
                     """
@@ -310,16 +313,258 @@ def get_maxima(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
     return max_x_, max_y_
 
 
+def get_two_maxima_old(pulses, pthres=0.5, smooth=True):
+    """
+    Get two maxima based on peak detection and gaussian fitting
+    """
+    comp_num = 2
+    max_x_ = []
+    max_y_ = []
+    for i in xrange(comp_num):
+        max_x_.append([])
+        max_y_.append([])
+    size = len(pulses[0])
+    x_ = np.array(range(size))
+
+    for i in xrange(len(pulses)):
+        # get maxima
+        pind = pk.indexes(pulses[i], min_dist=size / 5, thres=pthres)  # 5 really?
+        if len(pind) == 2:
+            v0 = [pulses[i][pind[0]], float(pind[0]), size / 10., pulses[i][pind[1]], float(pind[1]), size / 10.]
+            ## Error function
+            errfunc = lambda v, x, y: (f2(v, x) - y)
+            res = leastsq(errfunc, v0, args=(x_, pulses[i]), maxfev=1000, full_output=False)
+            v = res[0]
+            """
+            print v0
+            print v
+
+            ga20 = f2(v0, x_)
+            ga2 = f2(v, x_)
+            import matplotlib.pyplot as pl
+            pl.plot(pulses[i])
+            pl.plot(ga2, c="red")
+            pl.plot(ga20, c="green")
+            pl.axvline(x=v[1])
+            pl.axvline(x=v[4])
+            pl.show()
+            """
+            max_x_[0].append(v[1])
+            max_y_[0].append(float(i))
+            max_x_[1].append(v[4])
+            max_y_[1].append(float(i))
+        elif len(pind) == 1:
+            print "Warning: two maxima not found... (%d)" % len(pind)
+            v0 = [pulses[i][pind[0]], float(pind[0]), size / 10.]
+            ## Error function
+            errfunc = lambda v, x, y: (f(v, x) - y)
+            res = leastsq(errfunc, v0, args=(x_, pulses[i]), maxfev=1000, full_output=False)
+            v = res[0]
+            """
+            ga0 = f(v0, x_)
+            ga = f(v, x_)
+            import matplotlib.pyplot as pl
+            pl.plot(pulses[i])
+            pl.plot(ga, c="red")
+            pl.plot(ga0, c="green")
+            pl.axvline(x=v[1])
+            pl.show()
+            """
+        else:
+            print "Warning: two maxima not found... (%d)" % len(pind)
+    return max_x_, max_y_
+
+def get_two_maxima_old2(pulses, pthres=0.5, smooth=True):
+    """
+    Get two maxima based on two gaussian fitting
+    """
+    comp_num = 2
+    max_x_ = []
+    max_y_ = []
+    for i in xrange(comp_num):
+        max_x_.append([])
+        max_y_.append([])
+    size = len(pulses[0])
+    x_ = np.array(range(size))
+
+    for i in xrange(len(pulses)):
+        # get maxima
+        v0 = [pulses[i][size/4], size/4., size / 20., pulses[i][size*3/4], size*3./4., size / 20.]
+        ## Error function
+        errfunc = lambda v, x, y: (f2(v, x) - y)
+        res = leastsq(errfunc, v0, args=(x_, pulses[i]), maxfev=10000, full_output=False)
+        v = res[0]
+        #"""
+        print v0
+        print v
+        if i == 17:
+            ga20 = f2(v0, x_)
+            ga2 = f2(v, x_)
+            import matplotlib.pyplot as pl
+            pl.plot(pulses[i])
+            pl.plot(ga2, c="red")
+            pl.plot(ga20, c="green")
+            pl.axvline(x=v[1])
+            pl.axvline(x=v[4])
+            #pl.show()
+            pl.savefig("output/te.pdf")
+        #"""
+        max_x_[0].append(v[1])
+        max_y_[0].append(float(i))
+        max_x_[1].append(v[4])
+        max_y_[1].append(float(i))
+    return max_x_, max_y_
+
+def get_maxima2(pulses, comp_num, pthres=0.1, smooth=True):
+    """
+    Get maxima based on two gaussians fitting (with subcomponents)
+    """
+    max_x_ = []
+    max_y_ = []
+    for i in xrange(comp_num):
+        max_x_.append([])
+        max_y_.append([])
+
+    size = len(pulses[0])
+    ns = size / comp_num
+    pu_ = []
+    indexes = []
+
+    for i in xrange(comp_num):
+        # split window based on number of components
+        indexes.append(i * ns)  # starting index
+        pu_.append([])
+        for j in xrange(len(pulses)):
+            if i == comp_num-1:
+                pu_[-1].append(pulses[j][i*ns : ])
+            else:
+                pu_[-1].append(pulses[j][i*ns : (i+1)*ns])
+    #print len(pu_)
+    #print len(pu_[0])
+    errfunc = lambda v, x, y: (f2(v, x) - y)
+
+    for i in xrange(comp_num):
+        for j in xrange(len(pu_[i])):
+            bins = len(pu_[i][j])
+            x_ = np.array(range(bins))
+            v0 = [pu_[i][j][bins/3], bins/3., bins / 20., pu_[i][j][bins*2/3], bins*2./3., bins / 20.]
+            ## Error function
+            res = leastsq(errfunc, v0, args=(x_, pu_[i][j]), maxfev=1000, full_output=False)
+            v = res[0]
+            # check an offset
+            mx = np.max(pu_[i][j])
+            ind = list(pu_[i][j]).index(mx)
+            #print i, j, v[1] - ind
+            """
+            #if np.fabs(v[1]-ind) > 3:
+            ga0 = f2(v0, x_)
+            ga = f2(v, x_)
+            ga_1 = f(v[0:3], x_)
+            ga_2 = f(v[3:], x_)
+            import matplotlib.pyplot as pl
+            xx_ = np.array(range(len(ga))) + indexes[i]
+            pl.plot(pulses[j], c="blue")
+            pl.plot(xx_, pu_[i][j], c="pink")
+            pl.plot(xx_, ga, c="red")
+            #pl.plot(xx_, ga0, c="green")  # init parameters
+            pl.plot(xx_, ga_1, c="orange")
+            pl.plot(xx_, ga_2, c="brown")
+            pl.axvline(x=v[1]+indexes[i])
+            #pl.show()
+            pl.savefig("output/te.pdf")
+            pl.close()
+            a = raw_input()
+            #"""
+            peak = np.max(pu_[i])
+            if v[0] > pthres * peak:
+                max_x_[i].append(v[1] + indexes[i])
+                max_y_[i].append(float(j))
+            if v[3] >  pthres * peak:
+                max_x_[i].append(v[4] + indexes[i])
+                max_y_[i].append(float(j))
+        #max_x_[i] += max_x2_[i]
+        #max_y_[i] += max_y2_[i]
+    return max_x_, max_y_
+
+
+def get_maxima(pulses, comp_num, pthres=0.5, smooth=True):
+    """
+    Get maxima based on gaussian fitting
+    """
+    max_x_ = []
+    max_y_ = []
+    for i in xrange(comp_num):
+        max_x_.append([])
+        max_y_.append([])
+
+    size = len(pulses[0])
+    ns = size / comp_num
+    pu_ = []
+    indexes = []
+
+    for i in xrange(comp_num):
+        # split window based on number of components
+        indexes.append(i * ns)  # starting index
+        pu_.append([])
+        for j in xrange(len(pulses)):
+            if i == comp_num-1:
+                pu_[-1].append(pulses[j][i*ns : ])
+            else:
+                pu_[-1].append(pulses[j][i*ns : (i+1)*ns])
+
+    #print len(pu_)
+    #print len(pu_[0])
+
+    errfunc = lambda v, x, y: (f(v, x) - y)
+    for i in xrange(comp_num):
+        for j in xrange(len(pu_[i])):
+            bins = len(pu_[i][j])
+            x_ = np.array(range(bins))
+            v0 = [pu_[i][j][bins/2], bins/2., bins / 20.]
+            #print pu_[i][j][bins/2], bins/2., i, j
+            ## Error function
+            res = leastsq(errfunc, v0, args=(x_, pu_[i][j]), maxfev=1000, full_output=False)
+            v = res[0]
+            #print v0
+            #print v
+            # check an offset
+            mx = np.max(pu_[i][j])
+            ind = list(pu_[i][j]).index(mx)
+            print i, j, v[1] - ind
+            #"""
+            if np.fabs(v[1]-ind) > 3:
+                ga0 = f(v0, x_)
+                ga = f(v, x_)
+                import matplotlib.pyplot as pl
+                xx_ = np.array(range(len(ga))) + indexes[i]
+                pl.plot(pulses[j], c="blue")
+                pl.plot(xx_, pu_[i][j], c="pink")
+                pl.plot(xx_, ga, c="red")
+                pl.plot(xx_, ga0, c="green")
+                pl.axvline(x=v[1]+indexes[i])
+                #pl.show()
+                pl.savefig("output/te.pdf")
+                pl.close()
+                a = raw_input()
+            #"""
+            max_x_[i].append(v[1] + indexes[i])
+            max_y_[i].append(float(j))
+    return max_x_, max_y_
+
+
 def get_p3_simple(signal, x, on_fail=0):
     base = pk.baseline(signal)
     signal -= base
     pind = pk.indexes(signal, min_dist=len(signal))
-    freq = [x[pind[0]]]
-    err = [0.005]  # not now
-    p3 = 1. / freq[0]
-    p3_err = p3 - (1. / (freq[0] + err[0]))
-    p3_err2 = (1. / (freq[0] - err[0])) - p3
-    return p3, np.max([p3_err, p3_err2]), pind[0]
+    if len(pind) > 0:
+        freq = [x[pind[0]]]
+        err = [0.005]  # not now
+        p3 = 1. / freq[0]
+        p3_err = p3 - (1. / (freq[0] + err[0]))
+        p3_err2 = (1. / (freq[0] - err[0])) - p3
+        return p3, np.max([p3_err, p3_err2]), pind[0]
+    else:
+        return None, None, None
 
 
 def get_p3_old(signal, x, on_fail=0):
@@ -376,17 +621,25 @@ def get_p3(signal, x, thres=0.3):
         print "Warning! No maximum found: ignored"
         return None, None, None
     if freq_num == 1:
+        ln = len(signal) - 1  # boundary case
         ind = pind[0]
         # crude width estimate
         mx = signal[ind]
         val = mx
-        while val >= 0.5 *mx:
+        while val >= 0.5 * mx:
             ind += 1
-            val = signal[ind]
-        width = 2*(ind - pind[0])  # 4.71 sigma
+            if ind == ln:  # boundary case
+                break
+            else:
+                val = signal[ind]
+        width = 2 * (ind - pind[0])  # 4.71 sigma
         #print "Width", width, pind[0]
-        st = np.max([0, pind[0]-width])
-        end = np.min([len(x), pind[0]+width])
+        st = np.max([0, pind[0] - width])
+        end = np.min([len(x), pind[0] + width])
+        #print st, end, ind, width
+        if pind[0] + width > ln:  # boundary case
+            width = ln - pind[0]
+        #print width, "\n"
         # gaussian fit
         v0 = [signal[pind[0]], x[pind[0]], (x[pind[0] + width] - x[pind[0]]) / 3.]
         ## Error function
@@ -396,7 +649,7 @@ def get_p3(signal, x, thres=0.3):
         #print v[1], freq[0]
         freq = v[1]
         err = v[2]
-    elif freq_num == 2:
+    elif freq_num >= 2:
         # crude widths estimate
         widths = []
         sts = []
@@ -452,10 +705,10 @@ def get_p3(signal, x, thres=0.3):
         pl.plot(xx, ga2)
         pl.show()
         """
-        print "Warning! Two maxima found: higher used..."
-    else:
-        print "Warning! More than two maxima found: ignored"
-        return None, None, None
+        print "Warning! Two or more maxima found: highest used..."
+    #else:
+    #    print "Warning! More than two maxima found: ignored"
+    #    return None, None, None
 
     p3 = 1. / freq
     p3_err = p3 - (1. / (freq + err))
@@ -607,6 +860,9 @@ def get_p3_rahuls(signal, freq, thres=5., secs=5):
 
 
 def fit_lines(xs_, ys_, rngs=None):
+    """
+    Fits lines to subpulse locations (for all components, with defined range - one for a component)
+    """
     fun = lambda v, x: v[0] * x + v[1]
     x1s_ = []
     y1s_ = []
@@ -632,6 +888,70 @@ def fit_lines(xs_, ys_, rngs=None):
         xs.append(x_mean)
         xes.append(np.max([x_max-x_min, np.fabs(x_min-x_max)]))
     return np.array(x1s_), np.array(y1s_), vs, es, xs, xes
+
+
+def fit_lineseq(x_, y_, rngs=None):
+    """
+    Fits lines to subpulse locations (for one component, with defined ranges - many ranges for a component)
+    """
+    fun = lambda v, x: v[0] * x + v[1]
+    x1s_ = []
+    y1s_ = []
+    vs = []
+    es = []
+    xs = []
+    xes = []
+    if rngs is None:
+        rngs = [(0, len(x_))]
+    for i in xrange(len(rngs)):
+        xx_ = x_[rngs[i][0]:rngs[i][1]]
+        yy_ = y_[rngs[i][0]:rngs[i][1]]
+        x1_, y1_, v, err = least_sq_err(xx_, yy_, fun, [1., 1.], times_min=1.0, times_max=1.0)
+        x1s_.append(x1_)
+        y1s_.append(y1_)
+        vs.append(v[0])
+        es.append(err[0])
+        # Note that you fit in different order! y, x!
+        x_mean = np.mean(yy_)
+        x_max, x_min = np.max(yy_), np.min(yy_)
+        xs.append(x_mean)
+        xes.append(np.max([x_max-x_min, np.fabs(x_min-x_max)]))
+    return np.array(x1s_), np.array(y1s_), vs, es, xs, xes
+
+
+def fit_lines(xs_, ys_, rngs=None):
+    """
+    Fits lines to subpulse locations (for all components, with defined range - one for a component)
+    """
+    fun = lambda v, x: v[0] * x + v[1]
+    x1s_ = []
+    y1s_ = []
+    vs = []
+    es = []
+    xs = []
+    xes = []
+    for i in xrange(len(xs_)):
+        if rngs is None:
+            x_ = xs_[i]
+            y_ = ys_[i]
+        else:
+            x_ = xs_[i][rngs[i][0]:rngs[i][1]]
+            y_ = ys_[i][rngs[i][0]:rngs[i][1]]
+        x1_, y1_, v, err = least_sq_err(x_, y_, fun, [1., 1.], times_min=1.0, times_max=1.0)
+        x1s_.append(x1_)
+        y1s_.append(y1_)
+        vs.append(v[0])
+        es.append(err[0])
+        # Note that you fit in different order! y, x!
+        x_mean = np.mean(y_)
+        x_max, x_min = np.max(y_), np.min(y_)
+        xs.append(x_mean)
+        xes.append(np.max([x_max-x_min, np.fabs(x_min-x_max)]))
+    return np.array(x1s_), np.array(y1s_), vs, es, xs, xes
+
+
+
+
 
 def single_pulses(pulses, start=0, end=None):
     """

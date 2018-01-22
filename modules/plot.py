@@ -2,8 +2,9 @@ import os
 
 import numpy as np
 import matplotlib as mp
-mp.use("TkAgg")
+mp.use("Agg")
 from matplotlib import pyplot as pl
+from matplotlib.colors import LogNorm, PowerNorm
 
 import fun
 
@@ -37,7 +38,7 @@ def average(cls, start=0, length=None, name_mod=0, show=True):
     pl.minorticks_on()
     pl.subplots_adjust(left=0.14, bottom=0.08, right=0.99, top=0.99)
     pl.plot(average_)
-    filename = '%s_average_profile_st%d_le%d.svg' % (str(name_mod), start, length)
+    filename = '%s_average_profile_st%d_le%d.pdf' % (str(name_mod), start, length)
     pl.savefig(os.path.join(cls.output_dir, filename))
     pl.savefig(os.path.join(cls.output_dir, filename.replace(".svg", ".pdf")))
     print "filename:", filename
@@ -126,7 +127,7 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", na
     mp.rc('lines', linewidth=0.5)
 
     pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
-    pl.subplots_adjust(left=0.15, bottom=0.08, right=0.99, top=0.99, wspace=0., hspace=0.)
+    pl.subplots_adjust(left=0.16, bottom=0.08, right=0.99, top=0.99, wspace=0., hspace=0.)
 
     ax = pl.subplot2grid((5, 3), (0, 0), rowspan=4)
     pl.minorticks_on()
@@ -139,7 +140,7 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", na
 
     ax = pl.subplot2grid((5, 3), (0, 1), rowspan=4, colspan=2)
     #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto')
-    pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto', vmax=np.max(single_))  #, clim=(0., 1.0))
+    im = pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto', vmax=np.max(single_))  #, clim=(0., 1.0))
     pl.xticks([], [])
     ymin, ymax = pl.ylim()
     #pl.yticks([ymin, ymax], [y_min, y_max])
@@ -149,12 +150,18 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", na
     pl.minorticks_on()
     pl.plot(phase_, average_, c=grey)
     x0, x1 = pl.xlim(np.min(phase_), np.max(phase_))
+    y0 = np.min(average_)
+    y1 = np.max(average_)
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))
     yt = pl.yticks()
     pl.yticks(yt[0], [])
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))  # why?
     pl.xlabel(r'longitude [$^{\circ}$]')
     pl.tick_params(labeltop=False, labelbottom=True)
-    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_single_pulses_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_single_pulses_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
@@ -217,13 +224,13 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", name
     mp.rc('lines', linewidth=0.5)
 
     pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
-    pl.subplots_adjust(left=0.13, bottom=0.08, right=0.99, top=0.92, wspace=0., hspace=0.)
+    pl.subplots_adjust(left=0.14, bottom=0.08, right=0.99, top=0.92, wspace=0., hspace=0.)
 
     ax = pl.subplot2grid((5, 3), (0, 1), colspan=2)
     pl.minorticks_on()
     pl.plot(phase_, ffph_, c=grey)
     pl.xlim(phase_[0], phase_[-1])
-    pl.xlabel(r'phase [$^{\circ}$]')
+    #pl.xlabel(r'phase [$^{\circ}$]')
     pl.yticks([-150, 0, 150])
     ax.xaxis.set_label_position("top")
     pl.tick_params(labeltop=True, labelbottom=False)
@@ -247,25 +254,26 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", name
     pl.minorticks_on()
     pl.plot(phase_, average_, c=grey)
     x0, x1 = pl.xlim(phase_[0], phase_[-1])
-    y0, y1 = pl.ylim()
-    pl.ylim(y0-0.1*y1, 1.1*y1)
+    y0 = np.min(average_)
+    y1 = np.max(average_)
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))
     yt = pl.yticks()
     pl.yticks(yt[0], [])
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))  # why?
     pl.xlabel(r'longitude [$^{\circ}$]')
-    pl.savefig(os.path.join(cls.output_dir, '%s_lrfs_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_lrfs_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_lrfs_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
 
 
-def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", darkness=1., times=1, rngs=None, pthres=0.7, sthres=0.1, name_mod=0, show=True):
+def prefolded(cls, start=0, length=None, ph_st=None, ph_end=None, cmap="magma", darkness=1., times=2, name_mod=0, show=True):
     """
     folded profile
     :param cls: SinglePulseAnalysis class
-    :param p3: P_3 periodicity
-    :param period: pulsar period
-    :param comp_num: number of components in a profile
     :param start: first pulse
     :param length: number of pulses to use
     :param ph_st: phase starting index
@@ -273,9 +281,6 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
     :param darkness: lower value for brighter plots
     :param times: how many p3 periods to plot
-    :param rngs: ranges fitting procedure
-    :param pthres: threshold for peak finding
-    :param sthres: signal threshold
     :param name_mod: output filename prefix
     :param show: show plot on screen?
     :return:
@@ -296,14 +301,726 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     else:
         phase_ = np.linspace(0., 360., len(single_[0]))
 
-    ybins = 30
+    ybins = len(single_)
+    average_ = fun.average_profile(single_)
+    single_ = np.array(list(single_) + (times-1) * list(single_))
+
+    red = '#f15a60'
+    green = '#7ac36a'
+    blue = '#5a9bd4'
+    orange = '#faa75b'
+    purple = '#9e67ab'
+    brown = '#ce7058'
+    grey = '#737373'
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.16, bottom=0.08, right=0.98, top=0.92, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 1), (0, 0), rowspan=3)
+    pl.minorticks_on()
+    pl.tick_params(labeltop=True, labelbottom=False, top="on", direction="out")
+    ax.xaxis.set_label_position("top")
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+    #pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+    #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    #pl.contourf(single_, origin="lower", cmap=cmap, extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    #pl.grid(color="white")
+
+    pl.xticks([], [])
+    pl.yticks([ybins/2., 3./2.*ybins], [r'$\frac{P_3}{2}$', r'$\frac{3P_3}{2}$'])
+    pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
+    pl.figtext(0.1, 0.6, r"time", size=8., rotation=90., ha="center", va="center")
+    pl.figtext(0.05, 0.6, r"$\longrightarrow$", size=20, rotation=90., ha="center", va="center")
+
+    ax = pl.subplot2grid((4, 1), (3, 0))
+    pl.minorticks_on()
+    pl.plot(phase_, average_, c=grey, linewidth=1.)
+    y0 = np.min(average_)
+    y1 = np.max(average_)
+    #y0, y1 = pl.ylim()
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))
+    pl.xlim(phase_[0], phase_[-1])
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))  # why it is needed?
+    filename = '%s_prefolded_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
+    if show is True:
+        pl.show()
+    pl.close()
+
+
+def prefolded_fit(cls, p3=12.5, period=1.84, comp_num=2, start=0, length=None, ph_st=None, ph_end=None, cmap="magma", darkness=1., times=2, st_inds=[[38, 39], [26, 30]], lens=[[21, 20], [16, 12]], pthres=0.7, name_mod=0, show=True):
+    """
+    folded profile with drift characteristics fit
+    :param cls: SinglePulseAnalysis class
+    :param p3: P_3 periodicity
+    :param period: pulsar period
+    :param comp_num: number of components in a profile
+    :param start: first pulse
+    :param length: number of pulses to use
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param darkness: lower value for brighter plots
+    :param times: how many p3 periods to plot
+    :param st_inds: starting indexes for fitting procedure
+    :param lens: fitting paths lengths
+    :param pthres: threshold for peak finding
+    :param sthres: signal threshold
+    :param name_mod: output filename prefix
+    :param ybins: number of bins
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if length is None:
+        length = len(cls.data_)
+    single_ = cls.data_[start:start+length][:]
+    if ph_st is not None:
+        old_len = float(len(single_[0]))
+        ns_ = np.zeros([len(single_), ph_end-ph_st])
+        for i in xrange(len(single_)):
+            ns_[i] = single_[i][ph_st:ph_end]
+        single_ = ns_
+        ph_start = ph_st / old_len * 360.
+        phase_ = np.linspace(ph_start, ph_end / old_len * 360., len(single_[0]))
+        phase_ = fun.zeroed(phase_)
+    else:
+        phase_ = np.linspace(0., 360., len(single_[0]))
+
+    ybins = len(single_)
+    average_ = fun.average_profile(single_)
+    single_ = np.array(list(single_) + (times-1) * list(single_))
+
+    max_x_, max_y_ = fun.get_maxima2(single_, comp_num=comp_num, pthres=pthres, smooth=False)
+    maxx_x_ = []
+    maxx_y_ = []
+    # are you insane?
+    for i in xrange(comp_num):
+        for j in xrange(len(st_inds[i])):
+            maxx_x_.append([])
+            maxx_y_.append([])
+            ind = st_inds[i][j]
+            x, y = max_x_[i][ind], max_y_[i][ind]
+            for k in xrange(lens[i][j]):
+                maxx_x_[-1].append(x)
+                maxx_y_[-1].append(y)
+                rng = range(len(max_x_[i]))
+                rng.pop(ind)
+                # get the closest maximum
+                min_ = 1e50
+                for ii in rng:
+                    xn = max_x_[i][ii]
+                    yn = max_y_[i][ii]
+                    dist = fun.distance2D([x, y], [xn, yn])
+                    if dist < min_ and yn > y:
+                        min_ = dist
+                        xm, ym = xn, yn
+                x, y = xm, ym
+                maxx_x_[-1].append(x)
+                maxx_y_[-1].append(y)
+
+    dph = phase_[-1] - phase_[0]
+    dind = len(single_[0])
+    mxs_ = []
+    mys_ = []
+    rngs = []
+    for i in xrange(len(maxx_x_)):
+        rngs.append([])
+        size = len(maxx_x_[i])
+        rngs[-1].append((0, size))
+
+    vs2 = []
+    es2 = []
+    xs2 = []
+    xes2 = []
+    ys2 = []
+
+    #"""
+    for i in xrange(len(maxx_x_)):
+        my_, mx_, vs, es, xs, xes = fun.fit_lineseq(maxx_y_[i], maxx_x_[i], rngs=None)
+        mxs_.append(mx_)
+        mys_.append(my_)
+        for j, v in enumerate(vs):
+            vs2.append(v / dind * dph * ybins / (p3 * period))  # drift rate deg/s
+            es2.append(es[j] / dind * dph * ybins / (p3 * period))  # drift rate error
+            if ph_st is None:
+                xs2.append(xs[j] / dind * dph)  # phase
+            else:
+                xs2.append(xs[j] / dind * dph + phase_[0])  # phase
+            xes2.append(xes[j] / dind * dph)  # phase error
+            ys2.append(rngs[i][j][0] + (rngs[i][j][1]-rngs[i][j][0]) / 2.)
+    #"""
+    #print "Drift rates:", vs2
+    #print "Drift rates errors:", es2
+
+    red = '#f15a60'
+    green = '#7ac36a'
+    blue = '#5a9bd4'
+    orange = '#faa75b'
+    purple = '#9e67ab'
+    brown = '#ce7058'
+    grey = '#737373'
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.18, bottom=0.08, right=0.98, top=0.92, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 1), (0, 0))#, colspan=2)
+    pl.minorticks_on()
+    pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
+    pl.axhline(y=0, ls=":", lw=0.5, c=grey)
+    pl.ylim([-0.8, 0.8])
+    pl.xlim(phase_[0], phase_[-1])
+    pl.ylabel(r'Drift rate [$^\circ / {\rm s}$]')
+    pl.tick_params(labeltop=True, labelbottom=False)
+    ax.xaxis.set_label_position("top")
+    pl.xlabel(r'longitude [$^{\circ}$]')
+
+    ax = pl.subplot2grid((4, 1), (1, 0), rowspan=2)
+    pl.minorticks_on()
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+
+    for c in xrange(comp_num):
+        pl.scatter(max_x_[c], max_y_[c], c="grey", marker='x', s=4, lw=0.2, alpha=0.9)
+
+    for i in xrange(len(maxx_x_)):
+        pl.scatter(maxx_x_[i], maxx_y_[i], c="white", marker='x', s=5, lw=0.2)
+        #pl.scatter(max_x_[c], max_y_[c], c="red", marker='x', s=10, lw=0.3)
+        for j in xrange(len(mxs_[i])):
+            pl.plot(mxs_[i][j], mys_[i][j], c=red, lw=0.3)
+    pl.xticks([], [])
+    pl.yticks([ybins, 2.*ybins], [r'$P_3$', r'$2 P_3$'])
+    pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
+    pl.figtext(0.1, 0.5, r"time", size=8., rotation=90., ha="center", va="center")
+    pl.figtext(0.05, 0.5, r"$\longrightarrow$", size=20, rotation=90., ha="center", va="center")
+
+    ax = pl.subplot2grid((4, 1), (3, 0))
+    pl.minorticks_on()
+    pl.plot(phase_, average_, c=grey, linewidth=1.)
+    y0, y1 = pl.ylim()
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    pl.xlim(phase_[0], phase_[-1])
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    filename = '%s_prefolded_fit_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
+    if show is True:
+        pl.show()
+    pl.close()
+
+
+
+def prefolded_fitseq(cls, p3=12.5, period=1.84, comp_num=2, start=0, length=None, ph_st=None, ph_end=None, cmap="magma", darkness=1., times=2, st_inds=[[38, 39], [26, 30]], lens=[[21, 20], [16, 12]], seq=13, pthres=0.7, name_mod=0, show=True):
+    """
+    folded profile with drift characteristics fit
+    :param cls: SinglePulseAnalysis class
+    :param p3: P_3 periodicity
+    :param period: pulsar period
+    :param comp_num: number of components in a profile
+    :param start: first pulse
+    :param length: number of pulses to use
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param darkness: lower value for brighter plots
+    :param times: how many p3 periods to plot
+    :param st_inds: starting indexes for fitting procedure
+    :param lens: fitting paths lengths
+    :param seq: sequance length (for fitting)
+    :param pthres: threshold for peak finding
+    :param sthres: signal threshold
+    :param name_mod: output filename prefix
+    :param ybins: number of bins
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if length is None:
+        length = len(cls.data_)
+    single_ = cls.data_[start:start+length][:]
+    if ph_st is not None:
+        old_len = float(len(single_[0]))
+        ns_ = np.zeros([len(single_), ph_end-ph_st])
+        for i in xrange(len(single_)):
+            ns_[i] = single_[i][ph_st:ph_end]
+        single_ = ns_
+        ph_start = ph_st / old_len * 360.
+        phase_ = np.linspace(ph_start, ph_end / old_len * 360., len(single_[0]))
+        phase_ = fun.zeroed(phase_)
+    else:
+        phase_ = np.linspace(0., 360., len(single_[0]))
+
+    ybins = len(single_)
+    average_ = fun.average_profile(single_)
+    single_ = np.array(list(single_) + (times-1) * list(single_))
+
+    # starting indexes for clean paths (used for fitting)
+    max_x_, max_y_ = fun.get_maxima2(single_, comp_num=comp_num, pthres=pthres, smooth=False)
+    maxx_x_ = []
+    maxx_y_ = []
+    # are you insane?
+    for i in xrange(comp_num):
+        for j in xrange(len(st_inds[i])):
+            maxx_x_.append([])
+            maxx_y_.append([])
+            ind = st_inds[i][j]
+            x, y = max_x_[i][ind], max_y_[i][ind]
+            for k in xrange(lens[i][j]):
+                maxx_x_[-1].append(x)
+                maxx_y_[-1].append(y)
+                rng = range(len(max_x_[i]))
+                rng.pop(ind)
+                # get the closest maximum
+                min_ = 1e50
+                for ii in rng:
+                    xn = max_x_[i][ii]
+                    yn = max_y_[i][ii]
+                    dist = fun.distance2D([x, y], [xn, yn])
+                    if dist < min_ and yn > y:
+                        min_ = dist
+                        xm, ym = xn, yn
+                x, y = xm, ym
+                maxx_x_[-1].append(x)
+                maxx_y_[-1].append(y)
+
+    #print len(max_x_[0]), len(max_x_[1])
+    #exit()
+    dph = phase_[-1] - phase_[0]
+    dind = len(single_[0])
+    mxs_ = []
+    mys_ = []
+    rngs = []
+    for i in xrange(len(maxx_x_)):
+        rngs.append([])
+        size = len(maxx_x_[i])
+        for j in xrange(size-seq+1):
+            rngs[-1].append((j, j+seq))
+
+    vs2 = []
+    es2 = []
+    xs2 = []
+    xes2 = []
+    ys2 = []
+
+    #"""
+    for i in xrange(len(maxx_x_)):
+        my_, mx_, vs, es, xs, xes = fun.fit_lineseq(maxx_y_[i], maxx_x_[i], rngs=rngs[i])
+        mxs_.append(mx_)
+        mys_.append(my_)
+        for j, v in enumerate(vs):
+            vs2.append(v / dind * dph * ybins / (p3 * period))  # drift rate deg/s
+            es2.append(es[j] / dind * dph * ybins / (p3 * period))  # drift rate error
+            if ph_st is None:
+                xs2.append(xs[j] / dind * dph)  # phase
+            else:
+                xs2.append(xs[j] / dind * dph + phase_[0])  # phase
+            xes2.append(xes[j] / dind * dph)  # phase error
+            ys2.append(rngs[i][j][0] + (rngs[i][j][1]-rngs[i][j][0]) / 2.)
+    #"""
+    #print "Drift rates:", vs2
+    #print "Drift rates errors:", es2
+
+    red = '#f15a60'
+    green = '#7ac36a'
+    blue = '#5a9bd4'
+    orange = '#faa75b'
+    purple = '#9e67ab'
+    brown = '#ce7058'
+    grey = '#737373'
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.18, bottom=0.08, right=0.98, top=0.92, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 1), (0, 0))#, colspan=2)
+    pl.minorticks_on()
+    pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
+    pl.axhline(y=0, ls=":", lw=0.5, c=grey)
+    #pl.ylim([-0.8, 0.8])
+    pl.xlim(phase_[0], phase_[-1])
+    pl.ylabel(r'Drift rate [$^\circ / {\rm s}$]')
+    pl.tick_params(labeltop=True, labelbottom=False)
+    ax.xaxis.set_label_position("top")
+    pl.xlabel(r'longitude [$^{\circ}$]')
+
+    ax = pl.subplot2grid((4, 1), (1, 0), rowspan=2)
+    pl.minorticks_on()
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+
+    for c in xrange(comp_num):
+        pl.scatter(max_x_[c], max_y_[c], c="grey", marker='x', s=4, lw=0.2, alpha=0.9)
+
+    for i in xrange(len(maxx_x_)):
+        pl.scatter(maxx_x_[i], maxx_y_[i], c="white", marker='x', s=5, lw=0.2)
+        #pl.scatter(max_x_[c], max_y_[c], c="red", marker='x', s=10, lw=0.3)
+        for j in xrange(len(mxs_[i])):
+            pl.plot(mxs_[i][j], mys_[i][j], c=red, lw=0.3)
+    pl.xticks([], [])
+    pl.yticks([ybins, 2.*ybins], [r'$P_3$', r'$2 P_3$'])
+    pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
+    pl.figtext(0.1, 0.5, r"time", size=8., rotation=90., ha="center", va="center")
+    pl.figtext(0.05, 0.5, r"$\longrightarrow$", size=20, rotation=90., ha="center", va="center")
+
+    ax = pl.subplot2grid((4, 1), (3, 0))
+    pl.minorticks_on()
+    pl.plot(phase_, average_, c=grey, linewidth=1.)
+    y0, y1 = pl.ylim()
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    pl.xlim(phase_[0], phase_[-1])
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    filename = '%s_prefolded_fitseq_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
+    if show is True:
+        pl.show()
+    pl.close()
+
+
+
+def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, ph_end=None, cmap="inferno", darkness=1., times=2, rngs=None, pthres=0.7, sthres=0.1, name_mod=0, ybins=12, show=True):
+    """
+    folded profile
+    :param cls: SinglePulseAnalysis class
+    :param p3: P_3 periodicity
+    :param period: pulsar period
+    :param comp_num: number of components in a profile
+    :param start: first pulse
+    :param length: number of pulses to use
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param darkness: lower value for brighter plots
+    :param times: how many p3 periods to plot
+    :param rngs: ranges fitting procedure
+    :param pthres: threshold for peak finding
+    :param sthres: signal threshold
+    :param name_mod: output filename prefix
+    :param ybins: number of bins
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if length is None:
+        length = len(cls.data_)
+    single_ = cls.data_[start:start+length][:]
+    if ph_st is not None:
+        old_len = float(len(single_[0]))
+        ns_ = np.zeros([len(single_), ph_end-ph_st])
+        for i in xrange(len(single_)):
+            ns_[i] = single_[i][ph_st:ph_end]
+        single_ = ns_
+        ph_start = ph_st / old_len * 360.
+        phase_ = np.linspace(ph_start, ph_end / old_len * 360., len(single_[0]))
+        phase_ = fun.zeroed(phase_)
+    else:
+        phase_ = np.linspace(0., 360., len(single_[0]))
+
     single_ = fun.fold_single(single_, p3=p3, ybins=ybins)
     average_ = fun.average_profile(single_)
 
     single_ = np.array(list(single_) + (times-1) * list(single_))
 
-    max_x_, max_y_ = fun.get_maxima(single_, comp_num, pthres=pthres, sthres=sthres, smooth=True)
     # TODO no line fitting
+    """
+    #my_, mx_, vs, es, xs, xes = fun.fit_lines(max_y_, max_x_, rngs=rngs)
+    dph = phase_[-1] - phase_[0]
+    dind = len(single_[0])
+    vs2 = []
+    es2 = []
+    xs2 = []
+    xes2 = []
+    for i, v in enumerate(vs):
+        vs2.append(v / dind * dph * ybins / (p3 * period))  # drift rate deg/s
+        es2.append(es[i] / dind * dph * ybins / (p3 * period))  # drift rate error
+        if ph_st is None:
+            xs2.append(xs[i] / dind * dph)  # phase
+        else:
+            xs2.append(xs[i] / dind * dph + phase_[0])  # phase
+        xes2.append(xes[i] / dind * dph)  # phase error
+    print "Drift rates:", vs2
+    print "Drift rates errors:", es2
+    """
+
+    red = '#f15a60'
+    green = '#7ac36a'
+    blue = '#5a9bd4'
+    orange = '#faa75b'
+    purple = '#9e67ab'
+    brown = '#ce7058'
+    grey = '#737373'
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.16, bottom=0.08, right=0.98, top=0.92, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 1), (0, 0), rowspan=3)
+    pl.minorticks_on()
+    pl.tick_params(labeltop=True, labelbottom=False, top="on", direction="out")
+    ax.xaxis.set_label_position("top")
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+    #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    #pl.contourf(single_, origin="lower", cmap=cmap, extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    #pl.grid(color="white")
+
+    pl.xticks([], [])
+    pl.yticks([ybins/2., 3./2.*ybins], [r'$\frac{P_3}{2}$', r'$\frac{3P_3}{2}$'])
+    pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
+    pl.figtext(0.1, 0.6, r"time", size=8., rotation=90., ha="center", va="center")
+    pl.figtext(0.05, 0.6, r"$\longrightarrow$", size=20, rotation=90., ha="center", va="center")
+
+    ax = pl.subplot2grid((4, 1), (3, 0))
+    pl.minorticks_on()
+    pl.plot(phase_, average_, c=grey, linewidth=1.)
+    y0 = np.min(average_)
+    y1 = np.max(average_)
+    #y0, y1 = pl.ylim()
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))
+    pl.xlim(phase_[0], phase_[-1])
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.ylim(y0 - 0.1 * (y1-y0), y1 + 0.1 * (y1-y0))  # why it is needed?
+    filename = '%s_folded_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
+    if show is True:
+        pl.show()
+    pl.close()
+
+def folded_fit(cls, p3=8., period=1., comp_num=2, start=0, length=None, ph_st=None, ph_end=None, cmap="magma", darkness=1., times=1, rngs=None, pthres=0.7, name_mod=0, ybins=12, show=True):
+    """
+    folded profile with drift characteristics fit
+    :param cls: SinglePulseAnalysis class
+    :param p3: P_3 periodicity
+    :param period: pulsar period
+    :param comp_num: number of components in a profile
+    :param start: first pulse
+    :param length: number of pulses to use
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param darkness: lower value for brighter plots
+    :param times: how many p3 periods to plot
+    :param rngs: ranges fitting procedure
+    :param pthres: threshold for peak finding
+    :param sthres: signal threshold
+    :param name_mod: output filename prefix
+    :param ybins: number of bins
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if length is None:
+        length = len(cls.data_)
+    single_ = cls.data_[start:start+length][:]
+    if ph_st is not None:
+        old_len = float(len(single_[0]))
+        ns_ = np.zeros([len(single_), ph_end-ph_st])
+        for i in xrange(len(single_)):
+            ns_[i] = single_[i][ph_st:ph_end]
+        single_ = ns_
+        ph_start = ph_st / old_len * 360.
+        phase_ = np.linspace(ph_start, ph_end / old_len * 360., len(single_[0]))
+        phase_ = fun.zeroed(phase_)
+    else:
+        phase_ = np.linspace(0., 360., len(single_[0]))
+
+    single_ = fun.fold_single(single_, p3=p3, ybins=ybins)
+    average_ = fun.average_profile(single_)
+
+    single_ = np.array(list(single_) + (times-1) * list(single_))
+
+    max_x_, max_y_ = fun.get_maxima(single_, comp_num=comp_num, pthres=pthres, smooth=False)
+    my_, mx_, vs, es, xs, xes = fun.fit_lines(max_y_, max_x_, rngs=rngs)
+    dph = phase_[-1] - phase_[0]
+    dind = len(single_[0])
+    vs2 = []
+    es2 = []
+    xs2 = []
+    xes2 = []
+    for i, v in enumerate(vs):
+        vs2.append(v / dind * dph * ybins / (p3 * period))  # drift rate deg/s
+        es2.append(es[i] / dind * dph * ybins / (p3 * period))  # drift rate error
+        if ph_st is None:
+            xs2.append(xs[i] / dind * dph)  # phase
+        else:
+            xs2.append(xs[i] / dind * dph + phase_[0])  # phase
+        xes2.append(xes[i] / dind * dph)  # phase error
+    print "Drift rates:", vs2
+    print "Drift rates errors:", es2
+
+    red = '#f15a60'
+    green = '#7ac36a'
+    blue = '#5a9bd4'
+    orange = '#faa75b'
+    purple = '#9e67ab'
+    brown = '#ce7058'
+    grey = '#737373'
+
+    mp.rc('font', size=7.)
+    mp.rc('legend', fontsize=7.)
+    mp.rc('axes', linewidth=0.5)
+    mp.rc('lines', linewidth=0.5)
+
+    pl.figure(figsize=(3.14961, 4.33071))  # 8cm x 11cm
+    pl.subplots_adjust(left=0.16, bottom=0.08, right=0.98, top=0.92, wspace=0., hspace=0.)
+
+    ax = pl.subplot2grid((4, 1), (0, 0))#, colspan=2)
+    pl.minorticks_on()
+    pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
+    #pl.ylim([-1.3, 1.3])
+    pl.xlim(phase_[0], phase_[-1])
+    pl.ylabel(r'Drift rate [$^\circ / {\rm s}$]')
+    pl.tick_params(labeltop=True, labelbottom=False)
+    ax.xaxis.set_label_position("top")
+    pl.xlabel(r'longitude [$^{\circ}$]')
+
+    ax = pl.subplot2grid((4, 1), (1, 0), rowspan=2)
+    pl.minorticks_on()
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+    #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    #pl.contourf(single_, origin="lower", cmap=cmap, extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
+    #pl.grid(color="white")
+
+    for c in xrange(comp_num):
+        pl.scatter(max_x_[c], max_y_[c], c="white", marker='x', s=10, lw=0.3)
+        pl.plot(mx_[c], my_[c], c="white", lw=0.4)
+    pl.xticks([], [])
+    pl.yticks([ybins/2., 3./2.*ybins], [r'$\frac{P_3}{2}$', r'$\frac{3P_3}{2}$'])
+    pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
+    pl.figtext(0.1, 0.5, r"time", size=8., rotation=90., ha="center", va="center")
+    pl.figtext(0.05, 0.5, r"$\longrightarrow$", size=20, rotation=90., ha="center", va="center")
+
+    ax = pl.subplot2grid((4, 1), (3, 0))
+    pl.minorticks_on()
+    pl.plot(phase_, average_, c=grey, linewidth=1.)
+    y0, y1 = pl.ylim()
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    pl.xlim(phase_[0], phase_[-1])
+    pl.xlabel(r'longitude [$^{\circ}$]')
+    yt = pl.yticks()
+    pl.yticks(yt[0], [])
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    filename = '%s_folded_fit_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
+    if show is True:
+        pl.show()
+    pl.close()
+
+
+
+def folded_fitseq(cls, p3=8., period=1., comp_num=2, start=0, length=None, ph_st=None, ph_end=None, cmap="magma", darkness=1., times=1, rngs=None, pthres=0.7, name_mod=0, ybins=12, show=True):
+    """
+    folded profile with drift characteristics fit
+    :param cls: SinglePulseAnalysis class
+    :param p3: P_3 periodicity
+    :param period: pulsar period
+    :param comp_num: number of components in a profile
+    :param start: first pulse
+    :param length: number of pulses to use
+    :param ph_st: phase starting index
+    :param ph_end: phase ending index
+    :param cmap: color map (e.g. viridis, inferno, plasma, magma)
+    :param darkness: lower value for brighter plots
+    :param times: how many p3 periods to plot
+    :param rngs: ranges fitting procedure
+    :param pthres: threshold for peak finding
+    :param sthres: signal threshold
+    :param name_mod: output filename prefix
+    :param ybins: number of bins
+    :param show: show plot on screen?
+    :return:
+    """
+
+    if length is None:
+        length = len(cls.data_)
+    single_ = cls.data_[start:start+length][:]
+    if ph_st is not None:
+        old_len = float(len(single_[0]))
+        ns_ = np.zeros([len(single_), ph_end-ph_st])
+        for i in xrange(len(single_)):
+            ns_[i] = single_[i][ph_st:ph_end]
+        single_ = ns_
+        ph_start = ph_st / old_len * 360.
+        phase_ = np.linspace(ph_start, ph_end / old_len * 360., len(single_[0]))
+        phase_ = fun.zeroed(phase_)
+    else:
+        phase_ = np.linspace(0., 360., len(single_[0]))
+
+    single_ = fun.fold_single(single_, p3=p3, ybins=ybins)
+    average_ = fun.average_profile(single_)
+
+    single_ = np.array(list(single_) + (times-1) * list(single_))
+
+    max_x_, max_y_ = fun.get_maxima(single_, comp_num=comp_num, pthres=pthres, smooth=False)
+    dph = phase_[-1] - phase_[0]
+    dind = len(single_[0])
+    mxs_ = []
+    mys_ = []
+    size = len(max_x_[0])
+    if rngs is None:
+        seq = 5
+        rngs = []
+        for i in xrange(size-seq+1):
+            rngs.append((i, i+seq))
+
+    vs2 = []
+    es2 = []
+    xs2 = []
+    xes2 = []
+    ys2 = []
+
+    for i in xrange(comp_num):
+        my_, mx_, vs, es, xs, xes = fun.fit_lineseq(max_y_[i], max_x_[i], rngs=rngs)
+        mxs_.append(mx_)
+        mys_.append(my_)
+        for j, v in enumerate(vs):
+            vs2.append(v / dind * dph * ybins / (p3 * period))  # drift rate deg/s
+            es2.append(es[j] / dind * dph * ybins / (p3 * period))  # drift rate error
+            if ph_st is None:
+                xs2.append(xs[j] / dind * dph)  # phase
+            else:
+                xs2.append(xs[j] / dind * dph + phase_[0])  # phase
+            xes2.append(xes[j] / dind * dph)  # phase error
+            ys2.append(rngs[j][0] + (rngs[j][1]-rngs[j][0]) / 2.)
+    #print "Drift rates:", vs2
+    #print "Drift rates errors:", es2
+
     """
     #my_, mx_, vs, es, xs, xes = fun.fit_lines(max_y_, max_x_, rngs=rngs)
     dph = phase_[-1] - phase_[0]
@@ -342,9 +1059,8 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
 
     ax = pl.subplot2grid((4, 1), (0, 0))#, colspan=2)
     pl.minorticks_on()
-    # TODO no line fitting
-    #pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
-    pl.ylim([-1.3, 1.3])
+    pl.errorbar(xs2, vs2, yerr=es2, xerr=xes2, color="none", lw=1., marker='_', mec=red, ecolor=red, capsize=0., mfc=red, ms=6)
+    #pl.ylim([-1.3, 1.3])
     pl.xlim(phase_[0], phase_[-1])
     pl.ylabel(r'Drift rate [$^\circ / {\rm s}$]')
     pl.tick_params(labeltop=True, labelbottom=False)
@@ -353,15 +1069,15 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
 
     ax = pl.subplot2grid((4, 1), (1, 0), rowspan=2)
     pl.minorticks_on()
-    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='bicubic', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
+    pl.imshow(single_, origin="lower", cmap=cmap, aspect='auto', interpolation='none', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5], vmax=darkness*np.max(single_))
     #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='bicubic', aspect='auto', extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
     #pl.contourf(single_, origin="lower", cmap=cmap, extent=[-0.5, len(single_[0])-0.5, -0.5, len(single_)-0.5])
     #pl.grid(color="white")
 
     for c in xrange(comp_num):
         pl.scatter(max_x_[c], max_y_[c], c="white", marker='x', s=10, lw=0.3)
-        # TODO no line fitting
-        #pl.plot(mx_[c], my_[c], c="white", lw=0.3)
+        for j in xrange(len(mxs_[c])):
+            pl.plot(mxs_[c][j], mys_[c][j], c=grey, lw=0.3)
     pl.xticks([], [])
     pl.yticks([ybins/2., 3./2.*ybins], [r'$\frac{P_3}{2}$', r'$\frac{3P_3}{2}$'])
     pl.axis([0, len(single_[0])-1, 1, len(single_)-1])
@@ -377,11 +1093,16 @@ def folded(cls, p3=8., period=1., comp_num=1, start=0, length=None, ph_st=None, 
     pl.xlabel(r'longitude [$^{\circ}$]')
     yt = pl.yticks()
     pl.yticks(yt[0], [])
-    pl.savefig(os.path.join(cls.output_dir, '%s_folded_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_folded_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    pl.ylim(y0-0.1*y1, 1.1*y1)
+    filename = '%s_folded_fitseq_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
+
+
 
 
 def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, show=True):
@@ -477,7 +1198,7 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
     pl.ylim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
     #pl.locator_params(nbins=3)
     #pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
-    #pl.xlim([5.4, 7.1])   # comment this hack!
+    pl.xlim([10, 20])   # comment this hack!
     #pl.xticks([15, 17, 19])
     pl.ylabel('start period no.')
     pl.xlabel('$P_3$')
@@ -500,8 +1221,10 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel('frequency [$1/P$]')
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_p3_evolution_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
@@ -512,7 +1235,7 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
     pl.errorbar(p3_pulse_clean_,p3_clean_, yerr=p3_err_clean_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
     pl.xlim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
     #pl.scatter(range(0, p3_len), p3_cont_, c="red")
-    #pl.ylim([5.4, 7.1])  # comment it!
+    pl.ylim([10, 20])  # comment it!
     pl.ylabel('$P_3$')
 
     ax = pl.subplot2grid((2, 1), (1, 0))
@@ -530,9 +1253,10 @@ def p3_evolution(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=
     #pl.text(0.008, ylims[0] + 0.4*(ylims[1]-ylims[0]), "0.008")
     pl.xlim([0., 0.05])
     pl.xlabel('frequency [$1/P$]')
-
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_p3_evolution1D_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
@@ -596,7 +1320,8 @@ def p3_evolution_modes_b1839(cls, length=256, start=0, end=None, step=5, ph_st=N
                     p3, p3_err, max_ind = fun.get_p3(counts_, x=freq_)
                     #p3, p3_err, max_ind = fun.get_p3_rahuls(counts_, freq_)
                     #p3, p3_err, max_ind = fun.get_p3_simple(counts_, x=freq_)
-                    if p3 is not None:
+                    #if p3 is not None:
+                    if p3 < 16 and p3 > 10 and p3_err < 1.:# nope p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
                         p3_[i].append(p3)
                         p3_err_[i].append(p3_err)
                         p3_pulse_[i].append(k + length / 2)
@@ -681,8 +1406,10 @@ def p3_evolution_modes_b1839(cls, length=256, start=0, end=None, step=5, ph_st=N
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel('frequency [$1/P$]')
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_modes_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_modes_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_p3_evolution_modes_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
@@ -697,7 +1424,6 @@ def p3_evolution_modes_b1839(cls, length=256, start=0, end=None, step=5, ph_st=N
     for i in xrange(modes_num):
         pl.scatter(range(0, len(modes[i])), modes[i]*3+mod[i], c=cols[i], s=1.01, marker=",")
     pl.xlim(start, end-start)
-    pl.ylim([5.5, 7.3])
     pl.ylabel('$P_3$')
 
     ax = pl.subplot2grid((2, 1), (1, 0))
@@ -718,15 +1444,16 @@ def p3_evolution_modes_b1839(cls, length=256, start=0, end=None, step=5, ph_st=N
     #pl.text(0.008, ylims[0] + 0.4*(ylims[1]-ylims[0]), "0.008")
     pl.xlim([0., 0.05])
     pl.xlabel('frequency [$1/P$]')
-
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_modes_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_modes_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_p3_evolution1D_modes_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
 
 
-def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, modes=[], show=True):
+def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, ph_end=None, cmap="inferno", name_mod=0, modes=[], exp_range=None, show=True):
     """
     P3 evolution with time, version for B1839
     :param cls: SinglePulseAnalysis class
@@ -739,6 +1466,7 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     :param cmap: color map (e.g. viridis, inferno, plasma, magma)
     :param name_mod: output filename prefix
     :param modes: [[0...,1], [1,...,0]] tables with defined modes
+    :param exp_range: expected P3 range
     :param show: show plot on screen?
     :return:
     """
@@ -771,7 +1499,8 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
             p3_.append(p3)
             p3_err_.append(p3_err)
             p3_pulse_.append(i + length/2)
-            if p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
+            if p3 < 16 and p3 > 9 and p3_err < 2.:# nope p3_err < 0.5 and p3 > 4.:  # Magic number here # HACK for bi-drifter!
+            #if p3 is not None:
                 p3_clean_.append(p3)
                 p3_err_clean_.append(p3_err)
                 p3_pulse_clean_.append(i + length/2)
@@ -833,8 +1562,12 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     #pl.plot(p3_, p3_pulse_, c=grey)
     #pl.errorbar(p3_, p3_pulse_, xerr=p3_err_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
     pl.errorbar(p3_clean_, p3_pulse_clean_, xerr=p3_err_clean_, color="none", lw=1., marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=1.)
-    #pl.ylim(p3_pulse_[0], p3_pulse_[-1])
-    pl.ylim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
+    pl.ylim(p3_pulse_[0], p3_pulse_[-1])
+    #pl.ylim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
+    if exp_range is None:
+        pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
+    else:
+        pl.xlim(exp_range[0], exp_range[1])
     #pl.locator_params(nbins=3)
     #pl.xlim(0.9*np.min(p3_), 1.1*np.max(p3_))
     #pl.xlim([5.5, 7.25])   # comment this hack!
@@ -860,25 +1593,33 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     yt = pl.yticks()
     pl.yticks(yt[0], [])
     pl.xlabel('frequency [$1/P$]')
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_p3_evolution_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
+
+    p3mean = np.mean(p3_clean_)
 
     pl.figure()
     pl.minorticks_on()
     ax = pl.subplot2grid((2, 1), (0, 0))
     pl.errorbar(p3_pulse_clean_,p3_clean_, yerr=p3_err_clean_, color="none", lw=0.1, marker='_', mec=grey, ecolor=grey, capsize=0., mfc=grey, ms=0.1)
-    mod = [3.6, 3.8, 4.]
+    mod = [p3mean, p3mean+0.2, p3mean+0.4]
     #pl.scatter(range(0, p3_len), on_off_, c="red", s=0.01, marker=",")
-    pl.scatter(range(0, p3_len), on_off_*3+mod[2], c="red", s=1.01, marker=",")
+    pl.scatter(range(0, p3_len), -3*on_off_+mod[2], c="red", s=1.01, marker=",")
     #pl.scatter(range(0, p3_len), p3_cont_, c="red")
     #pl.ylim([5.4, 7.1])  # comment it!
     for i in xrange(modes_num):
-        pl.scatter(range(0, len(modes[i])), modes[i]*3+mod[i], c=cols[i], s=1.01, marker=",")
+        pl.scatter(range(0, len(modes[i])), -3*modes[i]+mod[i], c=cols[i], s=1.01, marker=",")
     pl.xlim(p3_pulse_clean_[0], p3_pulse_clean_[-1])
-    pl.ylim([5.5, 7.3])
+    if exp_range is None:
+        pl.ylim(0.9*np.min(p3_), 1.1*np.max(p3_))
+    else:
+        pl.ylim(exp_range[0], exp_range[1])
+    #pl.ylim([5.5, 7.3])
     pl.ylabel('$P_3$')
 
     ax = pl.subplot2grid((2, 1), (1, 0))
@@ -892,16 +1633,16 @@ def p3_evolution_b1839(cls, length=256, start=0, end=None, step=5, ph_st=None, p
     #pl.plot(freq, df, lw=2, c="black", alpha=0.7, label="$P_3$ - on/off")
     ylims = pl.ylim()
     pl.legend()
-
-    pl.text(0.0025, ylims[0] + 0.85*(ylims[1]-ylims[0]), "0.0025")
-    pl.text(0.005, ylims[0] + 0.8*(ylims[1]-ylims[0]), "0.005")
-    pl.text(0.0007, ylims[0] + 0.95*(ylims[1]-ylims[0]), "0.0007")
+    #pl.text(0.0025, ylims[0] + 0.85*(ylims[1]-ylims[0]), "0.0025")
+    #pl.text(0.005, ylims[0] + 0.8*(ylims[1]-ylims[0]), "0.005")
+    #pl.text(0.0007, ylims[0] + 0.95*(ylims[1]-ylims[0]), "0.0007")
     #pl.text(0.008, ylims[0] + 0.4*(ylims[1]-ylims[0]), "0.008")
     pl.xlim([0., 0.05])
     pl.xlabel('frequency [$1/P$]')
-
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.svg' % (str(name_mod), start, length)))
-    pl.savefig(os.path.join(cls.output_dir, '%s_p3_evolution1D_st%d_le%d.pdf' % (str(name_mod), start, length)))
+    filename = '%s_p3_evolution1D_st%d_le%d.pdf' % (str(name_mod), start, length)
+    pl.savefig(os.path.join(cls.output_dir, filename))
+    pl.savefig(os.path.join(cls.output_dir, filename.replace(".pdf", ".svg")))
+    print filename
     if show is True:
         pl.show()
     pl.close()
