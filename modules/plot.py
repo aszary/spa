@@ -445,6 +445,9 @@ def prefolded_fit(cls, p3=12.5, period=1.84, comp_num=2, start=0, length=None, p
     xs2 = []
     xes2 = []
     ys2 = []
+    ph_ = []
+    ph_err_ = []
+
 
     #"""
     for i in xrange(len(maxx_x_)):
@@ -460,9 +463,18 @@ def prefolded_fit(cls, p3=12.5, period=1.84, comp_num=2, start=0, length=None, p
                 xs2.append(xs[j] / dind * dph + phase_[0])  # phase
             xes2.append(xes[j] / dind * dph)  # phase error
             ys2.append(rngs[i][j][0] + (rngs[i][j][1]-rngs[i][j][0]) / 2.)
+            ph_.append(xs[j] / dind)
+            ph_err_.append(xes[j] / dind)
+
+
     #"""
-    #print "Drift rates:", vs2
-    #print "Drift rates errors:", es2
+    print "Drift rates:", vs2
+    print "Drift rates errors:", es2
+    print "\n\tPhases [deg]:", xs2
+    print "\n\tPhases errors [deg]:", xes2
+    print "\n\tPhases:", ph_
+    print "\n\tPhases errors:", ph_err_
+
 
     red = '#f15a60'
     green = '#7ac36a'

@@ -135,8 +135,8 @@ def b1839():
     #plot.average(s, start=0, name_mod="X_B1839", show=True)
     #plot.single(s, start=0, ph_st=190, ph_end=270, name_mod="X_B1839", show=True)
     #plot.prefolded(s, start=0, ph_st=190, ph_end=270, name_mod="X_B1839")
-    #plot.prefolded_fit(s, start=0, ph_st=190, ph_end=270, pthres=0.1, times=3, darkness=0.5, name_mod="X3_B1839")
-    plot.prefolded_fitseq(s, start=0, ph_st=190, ph_end=270, pthres=0.1, times=3, darkness=0.5, name_mod="X3_B1839")
+    plot.prefolded_fit(s, start=0, ph_st=190, ph_end=270, pthres=0.1, times=3, darkness=0.5, name_mod="X3_B1839")
+    #plot.prefolded_fitseq(s, start=0, ph_st=190, ph_end=270, pthres=0.1, times=3, darkness=0.5, name_mod="X3_B1839")
 
 def b1828():
     s = SinglePulseAnalysis(data_dir='/data/leeuwen/drifting/B1828-11/')
