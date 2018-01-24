@@ -470,9 +470,12 @@ def get_maxima2(pulses, comp_num, pthres=0.1, smooth=True):
             pl.plot(xx_, ga_1, c="orange")
             pl.plot(xx_, ga_2, c="brown")
             pl.axvline(x=v[1]+indexes[i])
+            pl.axvline(x=v[4]+indexes[i])
             #pl.show()
             pl.savefig("output/te.pdf")
             pl.close()
+            print "pulse:", j
+            print v[1]+indexes[i], v[4]+indexes[i]
             a = raw_input()
             #"""
             peak = np.max(pu_[i])
@@ -915,7 +918,9 @@ def fit_lineseq(x_, y_, rngs=None):
         x_mean = np.mean(yy_)
         x_max, x_min = np.max(yy_), np.min(yy_)
         xs.append(x_mean)
-        xes.append(np.max([x_max-x_min, np.fabs(x_min-x_max)]))
+        xes.append(np.max([x_mean-x_min, np.fabs(x_min-x_mean)]))
+        #print x_min, x_max, yy_, "\n"
+        #exit()
     return np.array(x1s_), np.array(y1s_), vs, es, xs, xes
 
 

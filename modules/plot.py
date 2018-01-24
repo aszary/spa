@@ -405,16 +405,16 @@ def prefolded_fit(cls, p3=12.5, period=1.84, comp_num=2, start=0, length=None, p
     max_x_, max_y_ = fun.get_maxima2(single_, comp_num=comp_num, pthres=pthres, smooth=False)
     maxx_x_ = []
     maxx_y_ = []
-    # are you insane?
+    # are you insane? yes
     for i in xrange(comp_num):
         for j in xrange(len(st_inds[i])):
             maxx_x_.append([])
             maxx_y_.append([])
             ind = st_inds[i][j]
             x, y = max_x_[i][ind], max_y_[i][ind]
+            maxx_x_[-1].append(x)
+            maxx_y_[-1].append(y)
             for k in xrange(lens[i][j]):
-                maxx_x_[-1].append(x)
-                maxx_y_[-1].append(y)
                 rng = range(len(max_x_[i]))
                 rng.pop(ind)
                 # get the closest maximum
@@ -447,7 +447,6 @@ def prefolded_fit(cls, p3=12.5, period=1.84, comp_num=2, start=0, length=None, p
     ys2 = []
     ph_ = []
     ph_err_ = []
-
 
     #"""
     for i in xrange(len(maxx_x_)):
