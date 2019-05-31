@@ -2,6 +2,7 @@ import os
 
 import numpy as np
 
+
 def modes(filename, includes=True, mod=1.):
     """
         Reads pulsar mode from a file
@@ -35,6 +36,21 @@ def modes(filename, includes=True, mod=1.):
 
 
     return modes
+
+def simple(cls, filename, end=None, bin_num=None):
+    """
+        Data file in numpy binary format (created with numpy.save())
+
+        Args:
+            filename: ...
+    """
+
+    f = open(os.path.join(cls.data_dir, filename), "r")
+    data = np.load(f)
+    f.close()
+    print "Loading...", "Length: %d" % len(data)
+    cls.data_ = data
+
 
 def westerbork(cls, file_name, end=None, bin_num=None, extra_=True):
     """

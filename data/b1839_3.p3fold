@@ -1,0 +1,320 @@
+SIMPLE  =                    T / file does conform to FITS standard             BITPIX  =                    8 / number of bits per data pixel                  NAXIS   =                    0 / number of data axes                            EXTEND  =                    T / FITS dataset may contain extensions            COMMENT   FITS (Flexible Image Transport System) format is defined in 'AstronomyCOMMENT   and Astrophysics', volume 376, page 359; bibcode: 2001A&A...376..359H HDRVER  = '4.1     '           / Header version                                 FITSTYPE= 'PSRFITS '           / FITS definition for pulsar data files          TELESCOP= 'WSRT    '           / Telescope name                                 ANT_X   =          3828445.659 / [m] Antenna ITRF X-coordinate                  ANT_Y   =             445223.6 / [m] Antenna ITRF Y-coordinate                  ANT_Z   =         5064921.5677 / [m] Antenna ITRF Z-coordinate                  OBS_MODE= 'PSR     '           / (PSR, CAL, SEARCH)                             SRC_NAME= 'B1839-04'           / Source or scan ID                              BACKEND = 'PuMa    '           / Backend ID                                     DATE-OBS= '2005-10-31T14:52:43' / Date of observation (YYYY-MM-DDThh:mm:ss UTC) RA      = '18:42:26.4770'      / Right ascension (hh:mm:ss.ssss)                DEC     = '-03:59:59.798'      / Declination (-dd:mm:ss.sss)                    EQUINOX =                2000. / Equinox of coords (e.g. 2000.0)                COORD_MD= 'J2000   '           / Coordinate mode (J2000, GALACTIC, ECLIPTIC)    OBSERVER= '        '           / Observer name(s)                               FRONTEND= '        '           / Receiver ID                                    PROJID  = '        '           / Project name                                   OBSNCHAN=                    1 / Number of frequency channels (original)        OBSBW   =                  20. / [MHz] Bandwidth for observation                CHAN_DM =                   0. / [cm-3 pc] DM used for on-line dedispersion     TRK_MODE= 'TRACK   '           / Track mode (TRACK, SCANGC, SCANLAT)            BMIN    =                   0. / [deg] Beam minor axis length (needs to be set tOBSFREQ =                  -2. / [MHz] Centre frequency for observation         STT_IMJD=                53674 / Start MJD (UTC days) (J - long integer)        STT_SMJD=                53563 / [s] Start time (sec past UTC 00h) (J)          STT_OFFS=    0.499519834294915 / [s] Start time offset (D)                      PS_GTYPE=                   25 / Describes the type of data in file             PS_YMIN =              0.25625 / Centre of bottom bin                           PS_YMAX =             12.04375 / Centre of top bin                              PS_DBASE=                    1 / Describes if baseline is subtracted            END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             XTENSION= 'BINTABLE'           / binary table extension                         BITPIX  =                    8 / 8-bit bytes                                    NAXIS   =                    2 / 2-dimensional binary table                     NAXIS1  =                   46 / width of table in bytes                        NAXIS2  =                    1 / number of rows in table                        PCOUNT  =                    0 / size of special data area                      GCOUNT  =                    1 / one data group (required keyword)              TFIELDS =                   10 / number of fields in each row                   TTYPE1  = 'POL_TYPE'           / label for field   1                            TFORM1  = '8A      '           / data format of field: ASCII Character          TTYPE2  = 'NPOL    '           / label for field   2                            TFORM2  = '1I      '           / data format of field: 2-byte INTEGER           TTYPE3  = 'NBIN    '           / label for field   3                            TFORM3  = '1J      '           / data format of field: 4-byte INTEGER           TTYPE4  = 'TBIN    '           / label for field   4                            TFORM4  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT4  = 's       '           / physical unit of field                         TTYPE5  = 'CTR_FREQ'           / label for field   5                            TFORM5  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT5  = 'MHz     '           / physical unit of field                         TTYPE6  = 'NCHAN   '           / label for field   6                            TFORM6  = '1I      '           / data format of field: 2-byte INTEGER           TTYPE7  = 'CHAN_BW '           / label for field   7                            TFORM7  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT7  = 'MHz     '           / physical unit of field                         TTYPE8  = 'RM_CORR '           / label for field   8                            TFORM8  = '1I      '           / data format of field: 2-byte INTEGER           TTYPE9  = 'DEDISP  '           / label for field   9                            TFORM9  = '1I      '           / data format of field: 2-byte INTEGER           TTYPE10 = 'PR_CORR '           / label for field  10                            TFORM10 = '1I      '           / data format of field: 2-byte INTEGER           EXTNAME = 'HISTORY '           / name of this binary table extension            END                                                                                                                                                                                                                                                                                                                             UNKNOWN    ,?yÿi ÊpÀ        @4      ÿÿ ÿÿ                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  XTENSION= 'BINTABLE'           / binary table extension                         BITPIX  =                    8 / 8-bit bytes                                    NAXIS   =                    2 / 2-dimensional binary table                     NAXIS1  =                 1104 / width of table in bytes                        NAXIS2  =                    4 / number of rows in table                        PCOUNT  =                    0 / size of special data area                      GCOUNT  =                    1 / one data group (required keyword)              TFIELDS =                    4 / number of fields in each row                   TTYPE1  = 'DATE_PRO'           / label for field   1                            TFORM1  = '24A     '           / data format of field: ASCII Character          TTYPE2  = 'USER    '           / label for field   2                            TFORM2  = '24A     '           / data format of field: ASCII Character          TTYPE3  = 'HOSTNAME'           / label for field   3                            TFORM3  = '32A     '           / data format of field: ASCII Character          TTYPE4  = 'PROC_CMD'           / label for field   4                            TFORM4  = '1024A   '           / data format of field: ASCII Character          EXTNAME = 'HISTORY_NOT_PSRFITS' / name of this binary table extension           END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ?                       ?                       ?                               puma :fpumanr -b 0 7 -d -w dd -Q -5 -L 200505521                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Wed Dec 13 12:58:13 2017wltvrede                tulip.jb.man.ac.uk              pmod -polselect 0 -debase -rebin 300 -v -onpulse "193 269" -ext singlepulse.gg 200505521.1380.gg                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                Sun Jul  8 09:12:48 2018szary                   dop372                          pmod -ext zap1 -zapfile rngs.zap data.gg                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        Fri Aug 17 07:45:45 2018szary                   dop372                          pspec -p3fold "12.3 24" -w data.zap1                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            XTENSION= 'BINTABLE'           / binary table extension                         BITPIX  =                    8 / 8-bit bytes                                    NAXIS   =                    2 / 2-dimensional binary table                     NAXIS1  =                  716 / width of table in bytes                        NAXIS2  =                   24 / number of rows in table                        PCOUNT  =                    0 / size of special data area                      GCOUNT  =                    1 / one data group (required keyword)              TFIELDS =                   19 / number of fields in each row                   TTYPE1  = 'INDEXVAL'           / label for field   1                            TFORM1  = '1D      '           / data format of field: 8-byte DOUBLE            TTYPE2  = 'TSUBINT '           / label for field   2                            TFORM2  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT2  = 's       '           / physical unit of field                         TTYPE3  = 'OFFS_SUB'           / label for field   3                            TFORM3  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT3  = 's       '           / physical unit of field                         TTYPE4  = 'LST_SUB '           / label for field   4                            TFORM4  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT4  = 's       '           / physical unit of field                         TTYPE5  = 'RA_SUB  '           / label for field   5                            TFORM5  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT5  = 'deg     '           / physical unit of field                         TTYPE6  = 'DEC_SUB '           / label for field   6                            TFORM6  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT6  = 'deg     '           / physical unit of field                         TTYPE7  = 'GLON_SUB'           / label for field   7                            TFORM7  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT7  = 'deg     '           / physical unit of field                         TTYPE8  = 'GLAT_SUB'           / label for field   8                            TFORM8  = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT8  = 'deg     '           / physical unit of field                         TTYPE9  = 'FD_ANG  '           / label for field   9                            TFORM9  = '1E      '           / data format of field: 4-byte REAL              TUNIT9  = 'deg     '           / physical unit of field                         TTYPE10 = 'POS_ANG '           / label for field  10                            TFORM10 = '1E      '           / data format of field: 4-byte REAL              TUNIT10 = 'deg     '           / physical unit of field                         TTYPE11 = 'PAR_ANG '           / label for field  11                            TFORM11 = '1E      '           / data format of field: 4-byte REAL              TUNIT11 = 'deg     '           / physical unit of field                         TTYPE12 = 'TEL_AZ  '           / label for field  12                            TFORM12 = '1E      '           / data format of field: 4-byte REAL              TUNIT12 = 'deg     '           / physical unit of field                         TTYPE13 = 'TEL_ZEN '           / label for field  13                            TFORM13 = '1E      '           / data format of field: 4-byte REAL              TUNIT13 = 'deg     '           / physical unit of field                         TTYPE14 = 'DAT_FREQ'           / label for field  14                            TFORM14 = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT14 = 'MHz     '           / physical unit of field                         TTYPE15 = 'DAT_WTS '           / label for field  15                            TFORM15 = '1D      '           / data format of field: 8-byte DOUBLE            TTYPE16 = 'DAT_OFFS'           / label for field  16                            TFORM16 = '1E      '           / data format of field: 4-byte REAL              TTYPE17 = 'DAT_SCL '           / label for field  17                            TFORM17 = '1E      '           / data format of field: 4-byte REAL              TTYPE18 = 'DATA    '           / label for field  18                            TFORM18 = '300I    '           / data format of field: 2-byte INTEGER           TUNIT18 = 'Jy      '           / physical unit of field                         TTYPE19 = 'PERIOD  '           / label for field  19                            TFORM19 = '1D      '           / data format of field: 8-byte DOUBLE            TUNIT19 = 's       '           / physical unit of field                         EXTNAME = 'SUBINT  '           / name of this binary table extension            INT_TYPE= 'TIME    '           / Time axis (TIME, BINPHSPERI, BINLNGASC, etc)   INT_UNIT= 'SEC     '           / Unit of time axis (SEC, PHS (0-1), DEG)        POL_TYPE= 'UNKNOWN '           / Polarisation identifier (e.g., AABBCRCI, AA+BB)NPOL    =                    1 / Nr of polarisations                            NCHNOFFS=                    0 / Channel/sub-band offset for split files        NSUBOFFS=                    0 / Subint offset (Contiguous SEARCH-mode files)   TBIN    =  0.00613307733333333 / [s] Time per bin or sample                     NBIN    =                  300 / Nr of bins (PSR/CAL mode; else 1)              NCHAN   =                    1 / Number of channels/sub-bands in this file      CHAN_BW =                  20. / [MHz] Channel/sub-band width                   DM      =                 196. / [cm-3 pc] DM for post-detection dedisperion    RM      =                   0. / [rad m-2] RM for post-detection deFaraday      END                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     @Å® ÄK	                                                                    @•     ?ð      ÅÂ[Â@ª>IÈ¨XË¾¼ùÞP£ÙÿÂ8]yßÒBðã·ù=Œq]Œi·¹Ââ,†Ñ¯`l)š  ígÇëï$b¡©x¹“nÇšÍ;S¢[kê 	Á±::6|y·–ØQûfÒ‘¿·*}1Nˆd?ÆÃŽu	J…Vÿ'2ŽrV`fû ŽÀ©™xo˜˜P^~`ÿòD’Mþ/‚C7ûÃ"Ð¯ìWG¸˜ùL¥ñÛÃNyÅ	=1§/i)U,['Ó·†7Ö¾‹¼¨€AU
+qÖË*Û6MGèUlV!SàPE=‹6ž,¶($b c¿YCL	Û
+üƒtÓC2qv¾á€+ðq!	#£.D³aât¯ÿl«ZmC¦/ìG_ax	">Òø+mšI@+˜9V" KëR W,K‰Áö?¬{—…?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      ÅÌXè@¨û,ÀáÿõèNµ¤m§1Ê±Q2Kòßô8ï9 ìÃA#‡)ºf£ÐÍ¨²~A_Lå¥Ä>  Al»-×ÌÆ¯]@¢6‡Ÿ¥yÎR´×j1
+¦mÝç—+Õ/@Ê!aøÍÉæ²îœ.àŒùP¢©¶òè^ðåýôø,Ð"yö¿¶BNÀ0ÃŒB]ÚÁ‚=16å™;Œ4q†”OPÝÁ{¹b62V†¶êÌçiÔ®œ1lFÏÐŽ,Ò8¬6¶˜ó~T4ô<ßVàuÎÇ.ýœâ{l+½5ÌCG‰EM?¦8‡)T(™#Š"%ïÕ©¶.G4ö}×.Ù®ß‚Ez7€¦_Äò".ÃC_Ðtÿq]~E©/{%`c0(f;¥Ù¬Ì¦·E9xŠˆJ˜|pE)-[QNÁù½-ó' ò?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      ÅÇ'@¤Ÿ7v¥÷ë~F±ÄX>Ž š	?T&Ií4@F—-'¯¨\$. §›ÃjgìqÞ{Ö›  ¬“ ²…¥I3&]hÃ«mæç¡xý†\m	ø5ò«:Ž³'«WT]ß¾ºT)æ ¬—Óúšô®y8CüÀÝ};;|¸ZbÞ½^â?É-Ïâ&ºæ5öCE	0@<Ð° H>b.0õ:]”}s|8«öûÖõƒ 	.[JÁu6Êÿ­)z!	3/ÜwÔåÔ
+%ø"3F~%O0¡7Ú?;Y601w'Ú “e#O»Ff<øÙÞý\>æ†,9æS(\¨Ò:š	#„ O$%É3äCþ]Œw‘ÿud_ DÝ/€#ã‹ì
+šz;#¢JtžF\æÊbfHGrýè½ðKJ‡:Þ2d ¡†?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      ÅÉ‹ã@ˆÉ“  xx•sgØ‚"Ž¬Æð¢ö2	éÃ1	yD£ïçXä
+w	§–ƒ™4|§]èÆÑÃt	+7ªãBB=›+Žà7‰ahÏûÇãhï‡1	ó_±
+öºLg„!ô¥áöM¨˜	kì C–Dg•Ô“‰”Ï[Þ6VÔB	= ¤ÝW!Ðk†ª—E	[ºL`h—“Ž™C\òµ™v§à=
+=X`Uá6îã
+'xÕßãå‚–µ þÈ	›5½ùDä7‡kïê	‘æc–XAô
+Dí
+¿Zá!-Ä=2@îC>à6ã3Ñ(&ì èÜ÷ ;!úKöºw¶¿Ûs²|¾â‰¢–Ž4"‡$¹'n$æ*‘+¯6CH^|þvva`F#2“$ÂÚ
+†
+^½-æ	¡,[	Zº¿‡™ê	Lk[84	5ü°©z*
+]Fó
+c‘4©Q?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å¤‹@wA< ž	YÍ‡v¹‰XŸ]>y°Òv2 ENMD>ÜlÿË	4&Y“ˆ[]˜@
+eF„;G‚–	Ä:‡ÿ‡t§ É	A¬qŒÅ®1"	Ö·á²[õ¡;}ìÇÉõá^Ó·}\bŒû´Ú¬LH“Ø)¹ÐÁžËý£©/a ˆÒ¦ÖkÈU¡é9›²w É¨YãZ~‚¤´å>}r7²¬wÐ
+q¬™‚ó©ãXú±^Ï	`  8Œ£	Áˆl
+w _èåéY= v~Ý	í
+Òo/7ÿÿ+Bi©eÎè(3ÂDIGôIŸC78¥/R*¨&÷#C!j!Z!4$Þ xò×ÊÒ˜©¯âÍž1$ù+å!Å$¨*z*).´048
+IF\³{£þv†cØIl5#¶†™	R„ºÌ¯œ³Ãm9ëÁM÷8-VD/yË0ÓmÜobhu´_g÷ÆWAT?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      ÅÀ-Ý@=.ûq(»Â„ñitåÒçA  ñ
+›§òm=Ì'ïïŸÄBl
+ Í		ü~hµ»x	ÀÀO´‹
+ò¯;„
+	÷ß"²ÇhdÀ
+ Õ²	ÒÃ	q¾Y"NÇ	,Òm¦¥n ßØØ	ð}ì*	áÚÕ‚	¥ƒ	­u
+L›É(´ð$b²T
+ãì
+Â
+{	>	&
+¨	y
+ˆAMJî
+ªœû	®
+ŒÙÁ'
+ä„	/ûäNÎ‹‡	„	b
+_²	~œ
+Yª8öý	sÿ;"t±
+ 
+î	Uq>ç1le	ñÝK„	š	éR’3	ÃÎ	5!åC*‡S‹O†Xý!Æ8~?ýL:QJUTÐB“;å6w2ï0²/¹,ñ,V.$,0+¶'-#{#S—g±ïï_81Uˆ$0!å"8,š*Û/w8E6~8>z=ýD¨Qh^ÇzŒÿvËf$M:+yn!¨«•ŸS¦¤?
+¸¡
+	%.† Ë!öÓ‘G
+èÇ +¨d
+,ùû§
+¯Ã›Gà?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å¹2º@!¢g:ê
+@¢	&~§Ä	—	û
+ÿ‰ÙƒHßv
+;k#¸
+8Zy9,
+ÒÂ	Ä¡Y	PQ
+Ý
+õéJ
+té¥
+ƒ9áF
+¿í
+¸_itót 	†ú	ô¿æÜ	«Ún˜ª
+wp
+=ÿ
+Ý	3ïCù c+
+‰uÁéñ  	:6†
+jw"pü
+wÞ
+`nu	w	'ôò±šÖ²	"
+bº‚N	g	ŒÂ˜¸
++4œ¢©
+5	‡
+	*	Ä^žeCÖÚÂ	H[ì…ì5k	¢ç
+	X¤ì> ön
+5œ¨.‰r
+„˜ü
+Ë
+Ü\À
+µ	þ
+mÜÚ~YÎÏ¸	%ÅÙ¿‡I!Ã*ô*4BLUã`ccd¼L@KÈA&;ê=2=§:ê7S9ë5˜3/!)l'J§   î ?Îr BZí!µ%B%o(‡4È6 :ATF D@IH4Lˆ^ jÕÿ}ñxhOS=<,“0ÅóâŽ	}	]ìgHú	ôõ¯ƒÍ=Ñ„+ˆ 	¨	ÿ	rÜ`
+ø	OÁ	ÆÑ
+¨k	n
+	£?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å˜lÿ?ú
+P¡}
+QÑVsF	6O
+|÷	n
+Ãw™0q·
+2%qªÊ.\þ	žÌwÄÿYÆ  ñ¨	ÛTô	v®
+­”1Ä
+»©Oöô#ÖrPeçm=[Ûèµ‹Xk’Ö}Ÿ÷	G –G	ph¸í»
+	\I Z	ï	µ¯¨
+zÎ	p§:F	m¦H	r/¬Ž±çá¬@
+‚	¨Æ—	$«ê®¥
+bz
+¯@UÖ+	lWLB<oLÓ1B
+±ë	];	÷¢
+á(OøÝÓ LUçÏ”˜¸?M»	ÄëjzÀ!±ëØêRq¢'Äp‘	›%/|53EúZ4g¹s?l„pÅZÔS,SNLVO§KL°E,OnB	?ÿ;Í5é1w#»(æ#Ô#sléÞ%¯%ÅA$C(©)£)4€6J@KTJ+Z­RS[YÖdHl»vìÿ}wêiQØ<®+Œ!Ftß2lÚ	0E	èþ+	»	ðê,Ö8Œ	ª@E÷¿ N™»I“Š2
+FÅ
+é{	ï
+?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      ÅÏüÖ?è¨º<	ÝœÕÜ¤
+š„SÛdÿ÷½¼	;6ç›Êješ¢»"§#v8	rÒ¿µT—
+hä	T:
+Ü±¸§¹v	U¬–Dá	 t<Ò!9	„5
+€
+3	Sb  O[=J†=€w¤¦ò8*‰ª§ö#	‡
+2R	ñ¡Ð 
+bGë¦ò‡­³‹5#sJœ±:;žúÚ2ÿ
+ø©Ëâ|¯Öc1Å%'¹¾K@b¾ãé—¼
+¨Ü¼Ñ•f	^käÞ¬
+½ìi	£¿4ú!	åˆ(»¤ŸWÔ¸ÛWç
+6„©ÐWQ	^†ã4åv$2\?‘R„`*y­ÿttìd}VÛWòWè]
+]Ü^HYŒMxMmI_AA	>c3—,™+©-^$<'ô!^+O3? ,21È37Ô;E“R§Xðghdcf“ikqmXm£n1q›j¾^Añ9t,g!e®´³´‹ï­
+pÙ‘ç)¸ìTûzVi
+¸v¹?V³…¥	o
+ "]]Ðc$?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å™c}?É¶üY^tÊ³Óëà	ªûÐ_c		GH|s¿±À
+FC	&	»B{ 
+k‰§·: ÑnFXh	àZ	Ó‹ƒÚ	×M‡w5û£
+ûL®¡]\  ãs
+Ã#_ðçŠ tì'XÕÿÍôÈMÔÑ°à)1ñZý.Óë7ãÃkS$C	:ëîÉdÀ
+¤X„š
+}­	-
+Ì	í	`âkÞX%	ì·ú	Ð	YT¿âÚ
+¦
+A¨0@†P!	c¦ 
+Ý¾õî\ŽÑÆfÚS`(§	›þó:† ÌE	ìøò	×]ŠÁ‚Èà$˜2…BTgvÿ}_tB^cSÚX†R¨_ÐpÂkµg#IöP×N©>Þ>°BÑ7.`%¬2ã"§11 \)N5Ó#ô/Y2Ð27ô:A‚I™[Nh½pZl…^ôf,i@o7i¸gËc@\ÑS= /s" Úª·Ý½
+À™6´®¿BìuÄ¡XßmÔª×g	a¹´c¿ƒ	ƒ
+‘T" 
+é
+Že“¨?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å·N?¾oW'Õ˜¸ÏYÅ÷ŠœÒ	˜^NŒ¨ž3Z9\Nßv58nÿd	+{‚<½°EÖ#®«‚¢MãèÍÖ`\Va þx;@ÄT“x8²
+BÚîn0Âô	tHEëÑ® ¶ªáž§Â	 v9Ò„á
+vùÇ‚!ÔÅE5¢ÃíMLAo;/Ôt÷$
+xtR2™
+¯	Üó”˜È6•œ	±ÓB6âK	—;Rö¸¶§!1i   Ú¿wÔV4ÇH	˜+­ë
+ãQd±Ó_Ä	–d“\g&v‹#	ÀR"lpß=3[7ñG|VÐl¼xsÿwÙmÕb™`KcêeakÊvŽtãhAWéXêXŒRTFyAJ7X+¡1ù%6{-S):1Û3'3f7*;¯BVKÀK‹XÜhnp´u½y:e¶pãpJnÃb.c3YPhHÏ?¦)­#ÍYôsnžu
+Ùìz£[—Ïý\H	”–`ˆŸ×Ä·×ë/6ï
+•†?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å¯‡?¨ê	Äê#ñÁ×±6&ÿøh  <&ù
+J/üP»ò¼ý	·Ìæ
+”åª2u
+±ZùÇîëàÈ@îJ!ÕM§àlZ‰Ã"aÍ Üé
+“ì6¡úüØ Üˆ%
+Ógû…jj“äQPµ¾
+O—§c'aO…ó÷gÉ
+,Ý'8h …Û	­	2Ä¹>;"PD	y¹÷ÞVrc×“x3m	Ù+W8zšý…}X­	ÆéÏªÇu«=ˆn‚Ò3qYŠèggü  Ë6=Æ¢\„
+XðYU×Ï M>†/#E±S—T•n›lªlEY¹fd5cêwËz¼xxysÝlh©b•\»^"Q]K9D3;Ç7,N7².X0N7¾@e:B«F4?«JP[vcDn@rýÿz™x¦y{yulÿ]uYM—A¯:L)'® >®ŒzinœœvM
+î>ÒÊÞ³Œcù W"¼`i£®×ŠÊ€9.
+[µn?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å½
+®?´RaÖ¬$Ã%~•—‹,ÿŒ¨94(]Ð«Y±|XÙ	¶3óüÝÜ'ÚT›ó
+J  k®eL1d	½[MA
+SæÙ]4CT! *	v	ßUÂ8Oõ&*P?ªyTS6Õ%v½zr
+Ë!§‚Á~„
+çkç[ žà #HS½™×i*)77-ž÷ X’Ý_#c…Ü	¾ì:À	ÞGrûb<«é+à…JŸ
+i^Jtèi ±R
+À«ã0G<½ü9W)ÄlO<#f4¤2q‚MÑ¬€î°“zœ­ÿ­²
+#7(tAÏGëEÎXR¯\ãXdRbWc„t¡zž|ÌþuIkQm\ŒZˆOºP&H£>½?†-+)2;;S;29IS@ÃKÅN6U€[Çn$w^o¶yëjhiâfijõNéQµF¸-ý0j)0—"znA
+ó¢¬èDN3á‘"¥	ê-…5væ9  	ŒØe=ýj÷"Vþ¯Xf±W?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å—$á?¶	þ¡	½èeö	ºVõ5´˜éÀìá+’N><
+˜	(§
+×V\‘|#n?[Ô¶	o
+Ã"E‡€
+Ç,W
+w
+÷àÉÛËJøAvÌ§Yzâà  ÿÍ•ò	%'¬®a¦pj
+É; c —Ælï|‰Ñ
+”î,0¼à
+†tB	æ	zß» @ØˆOá
+èY¡
+_	@'#
+L
+À3îRú•ø	¯vîè Äœ’Á"yàxbü	5
+­Ñ	œxòæ0Iù·ëu/çK[ˆ7\<	Ëä½Óý˜ð	áíÐ`
+oäà‘h4ëØ/'Ê±![$‰4<˜<o=ªBL‚O¥XÅZS^nd‘y²|1ÿ{ÒqIn|hùY5X^9(H:?ê7J4/”-ã5s.j.†/<~CFDªFmHëYîhit¡_ew\Ú\"N:[,K`Kû<+.E'k…•?D	1.´ÕŒ)	Œ
+\§
+@¢ñ‚ë$qD
+­è½äÐtêÙKÀÝ·šl_ìé?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Åµ¥ö?Ô´±	c±-ÖJ
+\ëÀk¼×´äûZ÷è'\Î\*-uôCÑêR
+½.·ÄšgŒÛks#		è
+¹‰ÀDåqÑ_	ü>a‰ü‡*Ú·  V®(B²½	)BBr@U6?	;ó	K/ZH€‰ë:ùi6
+K-òOQÅ
+.¦X
+JƒÜ´ÊutË³¿ÆØðù
+ÿ)[+õ®
+ÍvæÇ&	4©ãõc˜õîÉvÔ~
+Ð<Ü²EÃ“?ü}T
+ù½ëÜÙ³ƒBB
+|Ó	-íf
+]°ºDe¹
+/ý
+MýàÍ$(1<2L.÷/™7?{=#IõKP\š\îmÉwÇÿx×t±f›cN2OÂ>d5«<«4û*ï5Ì"	'1({*0o.}94s>V@´D?G·UÓ\~bñU‚_]XêW±R‚WfHþJz=Õ=s.~h’kŸW	Ò"
+`
+2ù	–R}Ø¸‹Ð
+ ­ÁÝRÖ
+m°ëvSÛæ
+­-“àt?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å¼ó²?Õ˜
+T5úéGÄ	G%´ós3	Z/GË&§)*¬ßï²­P	¯x’-
+"8µn{d‹'†á·êfPµÒ*óxÔóÅ³îí(•
+®h=µÔ©ÛcÂG®Rˆ	Q}@n®ã@£‘G”.FøRáÒ0´à÷edæ+0˜•šN†	ûAG
+r
+±Vì
+½"	£sM‰©
+_J¾ˆâí”tÇ×	öŽW°jŸÌ@	z™GÝ/yF
+ÁñòG¡°Ä%}§`³´£	ûZ
+}·ã ¶¿¯ W
+‡å ×ã„˜É*ü'/ø/:&·3w8@>÷IIV&g¼hq¢ÿu¡qE\uS~JB¹AÕ*Ô6’1à'Ç/Ú-ó'÷#>,_,Ø2Î7ù6:@ºBHN M”Sò_àSÔcÀSêUÃYUZL[b[†NfI4_,±8è ]‡ÏPÏ
+Á	Ú<Èîæ_z  sÅåå	âý|
+R–š3Ô	¶
+Ú/ Óø¿?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å®™M?ãÖx
+]‹y	äjÓ^¶	AˆtSUù  	„
+Qf3s–—oÐ
+~¤M	¡à‚
+e6ŽÌ”ð‚
+¾ƒŸ‰O¢ïC
+tëþ
+þ³	@g8dTm¦
+}Ó
+NBôè¤&@iõ¾È*
+[Á$Ó+Õi–æœÏY Î;U
+î	ƒò
+C«bÑö
+PÍd™ m
+f wJáX
+a¥	Œ	Sfí
+¸§³ÔNŽÇÖ õ%Ù£˜h
+í‘‡Âç7Ó7ªV‚ß]	™á6	cá’k
+)@z
+§‰ËM5Ï	2„Ö“yB5¶d
+^V¼Ý
+=}	V»Lß„!Ç.Œ. "R+ß6«@¤HùL9iNlAs¼ÿts½\&V·LÌDªD¢1¦3w/#`$Z$¦!Y'õ)Í'o,[1@4Ø9	?­@»E.LOT\ÁX![ñShX¨bàc%cFdX’O65‡ , Q	/ôÛÇA
+©`dŽÄÍP~Úý	°™J
+w0Þƒ­üáv
+ÓOb	ÖT
+MO
+“ 0ç?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      ÅÆR}?ÜöùÆY
+¸2·Œ
+†ÀBóúöX}âþzO?…U«IÍ—Ý
+¦
+)TÆ­»b£¹	Ö™F	9Ý7óDçì¹;þ¯uRù|1ƒ³Ïô>{ÚÀÒöDÿ ®	¨
+îêéÉ
+xö/s	s‹šÃ›Æ,õ"J’³áóU
+kaÉ£ÅiŽTO	°GBõ>  'ëóNÿž:ß„	Tm‰%oºíÄÞ	fkû}Z	Þ
+°•û/Ã
+S­6‚	U	ä›'®
+ä	ñ½À7q]p+Þü~4Ð««„«X6R)÷ö:
+Ðb‘()bFñ«WBò @W+¦7½,~1L<LJ5N¦Wºh¥wz˜},vâv‚]’f8NµN¯FÒ=!6#0Ã(Õ0 S#I(Ã)Â.«)/š56ÑBÍ@©?ÛLöSòZGTIT\c&k5ÿ{Ó}‘hÝ_ÒO=9-oˆU}qA
+‰
+­ÉP#•£u*€t qãëÒ]ÛcÙ	óYÉ/+s	Ÿe‘?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Åû<œ@ 0dtH
+UŠ	E^9k¨û	ö	½Úã
+Š	kjzYU
+TiP!8©
+Ö	%
+EÆ
+¾
+
+ý	ìàK£¡€%q
+OÎ
+dž	:nRO
+ôÎ
+&>½°&	šqÆ	£ÆrC…	Øû†
+
+*šƒé
+|	é=á^ùàM™	K“’Ur‰GF  ÂÈ;ÀüÙ
+X»ý@
+?	;â{šM‰(
+ÉdE
+T
+ºtD½Môƒñû8I!Í	ÎäÇ	F	–êàî_uqÔçmâ
+è±©ñ	IW]‡x ~0â
++I²Ee	ôPÛã.Cº^Cû«& ­)R#þ/^/T6£=MIRùa¿]û\r]J\|M)Hå>Y7v/Ú0+~%"­å–Ú#lXž Ý'å*+¯3v.s4d8²=\C=3?"DÛU\»ouÿtÀhâZ4EJ0h&®üu¦ð~2
+õ¹´[Ö¥L»£›	›ŠÐ—mŠ„ð&É	Î…ðÐûs	à~úÍV?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å¬aþ@3È@		Ê	Îµ¹lv\}"6ñ„á·rNFÔ„NvÛÚÌ6ÌP	Ò
+°	åšäÑ[Ë¹¼fÉµÜò
+ in\Ý  
+ðˆ„a	õy7Ù‰&+Ì­ºl°
+×¤ú_
+:	¢780ä½
+ý5ô	¬
+0`	Þõ
+¼ýSä}Œ
+dkúN	ª	”Òóî]Ü
+ÛŽR­
+;
+Ï^(ûÞy4„	ŽàÖ
+æ‹8ý	Ú`
+f	 ¡Ós
+v.S	‚“§èù–Ð¬Ç›
+ {9‰5u	g
+D	}ãØ¢p„	‰ª	/yŽBÌ˜ÑW–é…e ®`	{$Žü
+Ä:¹i^uV6 O)‰,L.•7Ô?¤EmLJ‰NN¤OÚ>æ6>-¼+¸##« [3Gú~6Ys!G¿$R(ê'¥*d+½-é4Ù1#57×I’]žkþx[oíX@š/ý ñJ]ÿÂÌ!?dY	+
+çµïï
+l
+¨Ê-	†¥W(S'Œ	3‘L4Ô._í”	7MÀ?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å«ó#@qëN•r
+Ûfl£'Ë	¶˜
+“	]‘	%æ¥^½âÐ	Ï;Ø[¦ù_œ†Ãæ×ÜÐiI	W52øŠ  W	³³]9~X·³D• «ž#žƒ›Ó˜ aÃºÂöA³šÏ«k'+@/VÒ	ñ¬àñÜ,ÿ5Á	5×õ€^íûž+êÏ
+G¹ærãÿ÷3òy.b\²É\ÃF ®v¾
+W*x9ÜåïýÄH’¼ß ¾?ß­Ç
+³zÈK6ù%?°†})
+LÈ°U
+b#&cÑÞt_þ[ÁÚgõ%°ÅìÍÞ
+Ìg
+ØQÇ]q “+4(p1›5ç9u:a<"A«<P=Ž3ÿ)H'ßÁåK­=÷$‚€»8·¶®í_! š)&*+¾*¬*61@ž[…p—ÿ{ØmXT@),Ð"03	rf‹e™
+S	Y³ÚÇ•	IšâZ«ê©
+¿’ËQá<˜
+/Üf2ø½(?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å·E@†©Yâþé3À ÷Ï[RFäv’=c\û’îtÛpRák¤–: M:V)d‰²ÓK æi	šÌU«€äŸú§õ ãžã9$þg5 #ìY2>§ ÛþH_4œ	Œ±ó›¬ £Æç‰¸GÀµÈÚ"K+bw  
+ÉXê^Æ[-…oX ½±ETt¹iU[õ ã‚,  íÕRQâí- ðŒ.Ã ˜?'«8& £½CüüPg®"Ï‚±×Yjp 0»œhÀˆ›æ¥Â*98[Öd•Y¼É2
+•©'¶ôŠmm!8*º*>.º6 58‡8:$3ï0:+Ó"Í!€[¢àfJ•j±ÌJ¾6©€#Þ&ô%<#¿"W-·>$Têm7~²ÿp"VjB)-ŽþdÚ=x	)£}J?üZ­î·T×”'ìÎ„ÎrJËì¨8¨åH?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å¢bä@ÓÍ—\$ó‡Ãç'»3B’ÿãn G:æIÊpæÌ›PÚs»Ïl} ÇÒaû,gQäõÞj€A>v(´=àz#àfŒÖËJyÿt‡ æ±\ßwI€ÊõÆ‹~?M~µU5NÂQsj€°ã9æ³rÜäÞŒ4¼ ¯@À µ‹×þü  zyt° ž’hÃ¾µsmkoŒ‰»ù‰¦'P>oèùº7¤ °ÓÔÊ½Nyx&S²eO¯û.Ëã†Áçæ<à9éào¶ /™!‹(°Ý	­‘9äúe$à-1x48’9{8	6›5^.Ê'´%M!³¡AÝ£*ÂÍ•N“ðY'„Š!w×ª#. ­$D+L:«PòeÎyaþpâZÅAd/ù±i„
+E	N¼G@dô<WÃ•Ü‘¹ìOôS-A…KíHRXÑ¨¦ÎkÅP4?ýq
+×`ép        @Å® ÄK	                                                                    @•     ?ð      Å—ùd@š»Îm"ÚßìÚÃp{ï‚·yñ;âùZ×5³•(Ô˜"§¿¹UòpLÍvï­®Æ šµ¥†  b"d§ïø¤…2ÖÏ³;·Žl‹"Â\V›4.U/)hÓhCðý †iàß2»^Äõµ^'ÚbçþÔ œÊhøk~y2 ‹U¹ÔÇ Ào Ý FôÞ­¤d±~ˆ|}›‰Ú­åIî H!6»ìKü^Õxü%ËªiF?ÑþšyD§¥Qwk m[Ú xzDÖŽ õ·“{ŠH½	Ï4	¡þÏò"N,Ò6¦B=HIIÉJœA¤;E4„0Á)¢$¿#´" ½Ü'þ«N˜íÿ/¡ŽÛ$½ ¹l!I !  v(¬4’Ld:xÿo ]	B0¬[S)	8	t	>6AüŠŽ\qNW‚CÕÞÇ8;ù›r‹OŸš¿ƒÆ££êÂá _WL¿8?ýq
+×`ép                                                                                                

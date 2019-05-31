@@ -249,6 +249,152 @@ def get_single_pulses(pulses, ratio=4./3.):
     y_max = int(i/ym)
     return profile_, y_max
 
+
+def get_maxima_peak(pulses, comp_num, pthres=0.1, amps=[1.0, 0.2], smooth=False):
+    """
+    Get maxima based on new PeakUtils package
+
+    Args:
+        amps: component amplitudes for peak detection threshold
+
+    """
+    max_x_ = []
+    max_y_ = []
+    pos_ = []
+
+    for i in xrange(comp_num):
+        max_x_.append([])
+        max_y_.append([])
+        pos_.append([])
+
+    size = len(pulses[0])
+    ns = size / comp_num
+    pu_ = []
+    indexes = []
+
+    for i in xrange(comp_num):
+        # split window based on number of components
+        indexes.append(i * ns)  # starting index
+        pu_.append([])
+        for j in xrange(len(pulses)):
+            if i == comp_num-1:
+                pu_[-1].append(pulses[j][i*ns : ])
+            else:
+                pu_[-1].append(pulses[j][i*ns : (i+1)*ns])
+
+    errfunc0 = lambda v, x, y, m: (fl(v, x, m) - y)
+    errfunc = lambda v, x, y: (f2(v, x) - y)
+    errfunc2l = lambda v, x, y, m1: (f2l(v, x, m1) - y)
+    errfunc3 = lambda v, x, y: (f3(v, x) - y)
+
+    for i in xrange(comp_num):
+        peak = np.max(pu_[i])
+        for j in xrange(len(pu_[i])):
+            bins = len(pu_[i][j])
+            x_ = np.array(range(bins))
+            res_x = []
+            res_y = []
+            if i == 0:
+                pind = pk.indexes(pu_[i][j], thres=pthres)  # min_dist=bins/2, 
+                # work on initial parameters
+                if len(pind) == 1:
+                    #continue  # for single pulse data
+                    ind1 = x_[pind[0]]
+                    mx1 = pu_[i][j][pind[0]]
+                    v0 = [mx1, bins / 20.]
+                    res = leastsq(errfunc0, v0, args=(x_, pu_[i][j], ind1), maxfev=1000, full_output=False)
+                    v = res[0]
+                    v[0] = mx1
+                    v[1] /= 1.3 # smartish
+                    ga = fl(v, x_, ind1)
+                    pu2 = np.array(pu_[i][j]) - np.array(ga)
+
+                    pind2 = pk.indexes(pu2, thres=pthres, min_dist=bins)  # min_dist=bins/2, 
+                    ind2 = x_[pind2[0]]
+                    v0 = [pu_[i][j][ind1], ind1, bins / 20., pu_[i][j][ind2], ind2, bins / 20.]
+                    #print v0, ind2
+                    ## Error function
+                    res = leastsq(errfunc, v0, args=(x_, pu_[i][j]), maxfev=1000, full_output=False)
+                    v = res[0]
+                    if v[0] > v[3]:
+                        inds = (0, 1)
+                    else:
+                        inds = (1, 0)
+                    if v[0] > pthres * peak * amps[inds[0]]:
+                        max_x_[i].append(v[1] + indexes[i])
+                        max_y_[i].append(float(j))
+                        if v[1] < v[4]:
+                            pos_[i].append(0)
+                        else:
+                            pos_[i].append(1)
+                    else:
+                        print "0 skipped"
+                    if v[3] >  pthres * peak * amps[inds[1]]:
+                        max_x_[i].append(v[4] + indexes[i])
+                        max_y_[i].append(float(j))
+                        if v[4] < v[1]:
+                            pos_[i].append(0)
+                        else:
+                            pos_[i].append(1)
+                    else:
+                        print "1 skipped"
+                    res_x.append(v[1] + indexes[i])
+                    res_x.append(v[4] + indexes[i])
+                elif len(pind) == 2:
+                    a0 = pu_[i][j][pind[0]]
+                    a1 = pu_[i][j][pind[1]]
+                    if a0 > a1:
+                        inds = (0, 1)
+                    else:
+                        inds = (1, 0)
+                    if a0 > pthres * peak * amps[inds[0]]:
+                        max_x_[i].append(x_[pind[0]] + indexes[i])
+                        max_y_[i].append(float(j))
+                        pos_[i].append(0)
+                    else:
+                        print "0 skipped"
+                    if a1 > pthres * peak * amps[inds[1]]:
+                        max_x_[i].append(x_[pind[1]] + indexes[i])
+                        max_y_[i].append(float(j))
+                        pos_[i].append(1)
+                    else:
+                        print "1 skipped"
+                    res_x.append(x_[pind[0]] + indexes[i])
+                    res_x.append(x_[pind[1]] + indexes[i])
+            else:
+                pind = pk.indexes(pu_[i][j], thres=pthres)  # min_dist=bins/2, 
+                for ii in xrange(len(pind)):
+                    max_x_[i].append(x_[pind[ii]] + indexes[i])
+                    max_y_[i].append(float(j))
+                    pos_[i].append(ii)
+            #print max_x_[i][-1], max_y_[i][-1]
+            #print pind
+            if True :
+                import matplotlib.pyplot as pl
+                #xx_ = np.array(range(len(ga))) + indexes[i]
+                pl.figure()
+                pl.plot(pulses[j], c="black", lw=0.5)
+                try:
+                    pl.plot(pu2, c="red", lw=0.7)
+                    pl.plot(ga, c="green", lw=0.7)
+                except:
+                    pass
+                #for ii in xrange(len(pind)):
+                #    pl.axvline(x=indexes[i]+x_[pind[ii]], ls=":", lw=0.5)
+                for ii in xrange(len(res_x)):
+                    pl.axvline(x=res_x[ii], ls=":", lw=0.5)
+                pl.savefig("output/te.pdf")  # TODO CHANGE IT!
+                pl.close()
+                print "pulse:", j
+                #print v[1]+indexes[i], v[4]+indexes[i]
+                #print "thres=", pthres*peak, "v[0]=", v[0], "v[3]=", v[3] 
+                a = raw_input()
+            #"""
+        #max_x_[i] += max_x2_[i]
+        #max_/y_[i] += max_y2_[i]
+    return max_x_, max_y_, pos_
+
+
 def get_maxima_old(pulses, comp_num, pthres=0.5, sthres=0.1, smooth=True):
     max_x_ = []
     max_y_ = []
@@ -415,9 +561,108 @@ def get_two_maxima_old2(pulses, pthres=0.5, smooth=True):
         max_y_[1].append(float(i))
     return max_x_, max_y_
 
+def get_maxima4(pulses, comp_num, pthres=0.1, smooth=True, inds=[27, 30, 35]):
+    """
+    Get maxima based on two gaussians fitting (with subcomponents)
+
+    Args:
+        inds: indexes of pulses to get the maxima
+    """
+
+    bins = len(pulses[0])
+    parts = bins / comp_num
+
+    pu_ = []
+    indexes = []
+    for i in inds:
+        pu_.append([])
+        indexes.append([])
+        for j in xrange(comp_num):
+            indexes[-1].append(j * parts)
+            if j == comp_num-1:
+                pu_[-1].append(pulses[i][j*parts : ])
+            else:
+                pu_[-1].append(pulses[i][j*parts : (j+1)*parts])
+
+    errfunc = lambda v, x, y: (f2(v, x) - y)
+
+    xxx = []
+    ppp = []
+    mpp = []
+    ga_ = []
+    ga2_ = []
+    xx_ = []
+    vs = []
+
+    for i in xrange(len(pu_)):
+        ga_.append([])
+        ga2_.append([])
+        xx_.append([])
+        vs.append([])
+
+        for j in xrange(len(pu_[i])):
+            bins = len(pu_[i][j])
+            x_ = np.array(range(len(pu_[i][j])))
+            #x_ = np.array(range(bins))
+            v0 = [pu_[i][j][bins/3], bins/3., bins / 20., pu_[i][j][bins*2/3], bins*2./3., bins / 20.]
+            ## Error function
+            res = leastsq(errfunc, v0, args=(x_, pu_[i][j]), maxfev=1000, full_output=False)
+            v = res[0]
+            # check an offset
+            mx = np.max(pu_[i][j])
+            ind = list(pu_[i][j]).index(mx)
+            ga0 = f2(v0, x_)
+            ga = f2(v, x_)
+            ga_1 = f(v[0:3], x_)
+            ga_2 = f(v[3:], x_)
+            ga_[-1].append([ga_1, ga_2])
+            ga2_[-1].append(ga)
+            xx_[-1].append(np.array(range(len(x_))) + indexes[i][j])
+            vs[-1].append([v[1]+indexes[i][j], v[4]+indexes[i][j]])
+        xx = []
+        pp = []
+        # the whole signal
+        for jj in xrange(len(ga_[i])):
+            xx += list(xx_[i][jj])
+            pp += list(pu_[i][jj])
+        xxx.append(xx)
+        ppp.append(pp)
+        pp = []
+        # the whole model
+        for jj in xrange(len(ga2_[i])):
+            pp += list(ga2_[i][jj])
+        mpp.append(pp)
+
+        """
+        import matplotlib.pyplot as pl
+        pl.figure()
+        pl.plot(xxx[i], ppp[i], c="blue")
+        pl.plot(xxx[i], mpp[i], c="pink")
+        for jj in xrange(len(ga_[i])):
+            for g in ga_[i][jj]:
+                pl.plot(xx_[i][jj], g, c="orange")
+        # positions
+        for jj in xrange(len(vs[i])):
+            pl.axvline(x=vs[i][jj][0])
+            pl.axvline(x=vs[i][jj][1])
+
+        pl.savefig("output/te.pdf")
+        pl.close()
+        print "pulse:", j
+        print v[1]+indexes[i][j], v[4]+indexes[i][j]
+        a = raw_input()
+        #"""
+
+    return xxx, ppp, mpp, xx_, ga_, vs
+
+
+
 def get_maxima2(pulses, comp_num, pthres=0.1, smooth=True):
     """
     Get maxima based on two gaussians fitting (with subcomponents)
+
+    Args:
+
     """
     max_x_ = []
     max_y_ = []
@@ -463,6 +708,7 @@ def get_maxima2(pulses, comp_num, pthres=0.1, smooth=True):
             ga_2 = f(v[3:], x_)
             import matplotlib.pyplot as pl
             xx_ = np.array(range(len(ga))) + indexes[i]
+            pl.figure()
             pl.plot(pulses[j], c="blue")
             pl.plot(xx_, pu_[i][j], c="pink")
             pl.plot(xx_, ga, c="red")
@@ -603,6 +849,10 @@ def get_p3_old(signal, x, on_fail=0):
     #print np.max([p3_err, p3_err2])
     return p3, np.max([p3_err, p3_err2]), pind[0]
 
+def fl(v, x, m):
+    res = v[0] * np.exp(-0.5 * ((x - m) / v[1]) ** 2)
+    return res
+
 
 def f(v, x):
     res = v[0] * np.exp(-0.5*((x-v[1]) / v[2]) ** 2)
@@ -712,7 +962,7 @@ def get_p3(signal, x, thres=0.3):
     #else:
     #    print "Warning! More than two maxima found: ignored"
     #    return None, None, None
-
+    print 'Frequency:', freq, "Error:", err
     p3 = 1. / freq
     p3_err = p3 - (1. / (freq + err))
     p3_err2 = (1. / (freq - err)) - p3
@@ -918,7 +1168,7 @@ def fit_lineseq(x_, y_, rngs=None):
         x_mean = np.mean(yy_)
         x_max, x_min = np.max(yy_), np.min(yy_)
         xs.append(x_mean)
-        xes.append(np.max([x_mean-x_min, np.fabs(x_min-x_mean)]))
+        xes.append(np.max([x_mean-x_min, x_max-x_mean])) ## ??
         #print x_min, x_max, yy_, "\n"
         #exit()
     return np.array(x1s_), np.array(y1s_), vs, es, xs, xes
