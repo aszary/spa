@@ -21,7 +21,7 @@ class SinglePulseAnalysis:
         self.off_rms_ = None
         self.base = None
 
-        self.types = {'westerbork': load.westerbork, 'westerbork4': load.westerbork4, 'psrchive': load.psrchive, "simple": load.simple}
+        self.types = {'meerkat': load.meerkat, 'westerbork': load.westerbork, 'westerbork4': load.westerbork4, 'psrchive': load.psrchive, "simple": load.simple}
 
     def load(self, file_name, end=None, bin_num=None, type='westerbork4'):
         try:
@@ -30,6 +30,7 @@ class SinglePulseAnalysis:
             print 'Loading function not implemented.\nExiting...'
             exit()
         fun(self, file_name, end=end, bin_num=bin_num)
+
 
     def plot_all(self):
         plot.average(self)
@@ -75,10 +76,11 @@ class SinglePulseAnalysis:
 def main():
     #test_p3()
     #b1839()
-    j0815()
+    #j0815()
     #j0815_rankin()
     #b0943()
     #b1828()
+    j1705()
     print "Bye"
 
 def test_p3():
@@ -216,6 +218,15 @@ def j0815():
     #plot.folded(s, p3=16.7, start=320, length=520)
     plot.p3_evolution(s, step=1, length=128, name_mod=1)  #, start=6200)
     #s.plot_all()
+
+def j1705():
+    s = SinglePulseAnalysis(data_dir='/data/szary/meerkat/J1705-1906/')
+    #s.load('1070/*ar', end=None, type='meerkat')
+    s.load('1498/*ar', end=None, type='meerkat')
+    plot.single(s, start=0, brightness=0.5)
+    plot.lrfs(s)
+    #plot.folded(s, p3=10.0, name_mod="J1705")
+
 
 
     files = ['./20111105/B0943+10_L33341_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111107/B0943+10_L33339_RSP0.PrepsubbNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111127/B0943+10_L35621_RSP0.PrepsubbZerodmNoclip_DM15.31.puma.119.gg.1pol.asc','./20111201/B0943+10_L36159_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111204/B0943+10_L36157_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111221/B0943+10_L39707_RSP0.ZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20120111/B0943+10_L42350_RSP0.PrepdataNoclip.1.puma.119.gg.1pol.asc']

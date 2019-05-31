@@ -1,4 +1,5 @@
 import os
+import glob
 
 import numpy as np
 
@@ -289,5 +290,55 @@ def psrchive(cls, file_name, end=None, bin_num=None):
 
    # print dir(arch)
     #print dir(data)
+
+def meerkat(cls, regex, end=None, bin_num=None):
+    """
+    PSRCHIVE multiple files based on regex
+    :param regex: files to read
+    :param end: number pulses to read
+    :param bin_num: number of bins
+    :return:
+    """
+    try:
+        import psrchive as ps
+    except:
+        print "Error. Python interface to psrchive not installed (remember to ./configure --enable-shared)\nExiting..."
+        exit()
+
+    files = sorted(glob.glob(os.path.join(cls.data_dir, regex)))
+
+    arch = ps.Archive_load(files[0])
+    src = arch.get_source()
+    bnd = arch.get_bandwidth()
+    frq = arch.get_centre_frequency()
+    dm = arch.get_dispersion_measure()
+    bins = arch.get_nbin()
+    pulses = len(files) # arch.get_nsubint()
+    nchan = arch.get_nchan()
+    npol = arch.get_npol()
+    reciver = arch.get_receiver_name()
+    tel = arch.get_telescope()
+    arch.fscrunch()
+    print "Telescope:", tel, "reciver:", reciver
+    print "Source:", src
+    print "DM", dm
+    print "Bandwidth:", bnd
+    print "Number of chanels", nchan
+    print "Frequency:", frq
+    print "Number of polarizations:", npol
+    print "Bins:", bins
+    print "Nsubint (pulses):", pulses
+
+    cls.data_ = np.zeros([pulses, bins])
+
+    for i,f in enumerate(files):
+        arch = ps.Archive_load(f)
+        arch.fscrunch()
+        data = arch.get_data()
+        #print data.shape
+        for j in xrange(bins):
+            cls.data_[i][j] = data[0][0][0][j]  # 0, 0 indexes?
+
+    #print regex, files[0], files[-1]
 
 

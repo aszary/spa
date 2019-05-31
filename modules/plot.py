@@ -114,10 +114,14 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", na
         phase_ = fun.zeroed(phase_)
     else:
         phase_ = np.linspace(0., 360., len(single_[0]))
+    #print len(single_), len(single_[0])
 
     average_ = fun.average_profile(single_)
     counts_, pulses_ = fun.counts(single_)
     pulses_ += start
+
+    ma = np.max(np.array(single_).flatten())
+    mi = np.min(np.array(single_).flatten())
 
     grey = '#737373'
 
@@ -140,7 +144,7 @@ def single(cls, start=0, length=100, ph_st=None, ph_end=None, cmap="inferno", na
 
     ax = pl.subplot2grid((5, 3), (0, 1), rowspan=4, colspan=2)
     #pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto')
-    im = pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto', vmax=brightness*np.max(single_))  #, clim=(0., 1.0))
+    im = pl.imshow(single_, origin="lower", cmap=cmap, interpolation='none', aspect='auto', vmax=mi+brightness*(ma-mi))  #, clim=(0., 1.0))
     pl.xticks([], [])
     ymin, ymax = pl.ylim()
     #pl.yticks([ymin, ymax], [y_min, y_max])
