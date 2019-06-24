@@ -232,7 +232,8 @@ def lrfs(cls, start=0, length=512, ph_st=None, ph_end=None, cmap="inferno", name
 
     ax = pl.subplot2grid((5, 3), (0, 1), colspan=2)
     pl.minorticks_on()
-    pl.plot(phase_, ffph_, c=grey)
+    # TODO uncomment the line below
+    #pl.plot(phase_, ffph_, c=grey) 
     pl.xlim(phase_[0], phase_[-1])
     #pl.xlabel(r'phase [$^{\circ}$]')
     pl.yticks([-150, 0, 150])

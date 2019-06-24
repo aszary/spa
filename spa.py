@@ -73,16 +73,6 @@ class SinglePulseAnalysis:
         plot.p3_evolution(self, start=0, length=512, end=end, step=50, name_mod='r%d' % num, show=False)
 
 
-def main():
-    #test_p3()
-    #b1839()
-    #j0815()
-    #j0815_rankin()
-    #b0943()
-    #b1828()
-    j1705()
-    print "Bye"
-
 def test_p3():
     s = SinglePulseAnalysis(data_dir='/data/szary/B1839-04/')
     #s.load('200505521.1380.debase.gg', end=None, type='psrchive') 
@@ -227,6 +217,37 @@ def j1705():
     plot.lrfs(s)
     #plot.folded(s, p3=10.0, name_mod="J1705")
 
+def j0630():
+    s = SinglePulseAnalysis(data_dir='/data/szary/meerkat/J0630-2834/')
+    s.load('grand.debase.gg', end=None, type='psrchive')
+    plot.single(s, start=0, ph_st=800, ph_end=1023, length=None, brightness=0.2)
+    plot.lrfs(s, length=512, ph_st=800, ph_end=1023)
+    plot.folded(s, p3=4.1, ybins=10, ph_st=800, ph_end=1023, name_mod="J0630")
+
+
+def grand():
+    s = SinglePulseAnalysis(data_dir='/data/szary/meerkat/')
+    s.load('J1701-3006B/grand.rr', end=None, type='psrchive')
+    ph_st = None
+    ph_end = None
+    plot.single(s, start=0, ph_st=ph_st, ph_end=ph_end, length=None, brightness=0.9)
+    plot.lrfs(s, length=512, ph_st=ph_st, ph_end=ph_end)
+    #plot.folded(s, p3=4.1, ybins=10, ph_st=ph_st, ph_end=ph_end, name_mod="J0630")
+
+
+
+
+def main():
+    #test_p3()
+    #b1839()
+    #j0815()
+    #j0815_rankin()
+    #b0943()
+    #b1828()
+    #j1705()
+    #j0630()
+    grand()
+    print "Bye"
 
 
     files = ['./20111105/B0943+10_L33341_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111107/B0943+10_L33339_RSP0.PrepsubbNoclip.1_DM15.31.puma.119.gg.1pol.asc', './20111127/B0943+10_L35621_RSP0.PrepsubbZerodmNoclip_DM15.31.puma.119.gg.1pol.asc','./20111201/B0943+10_L36159_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111204/B0943+10_L36157_RSP0.PrepsubbZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20111221/B0943+10_L39707_RSP0.ZerodmNoclip.1_DM15.31.puma.119.gg.1pol.asc','./20120111/B0943+10_L42350_RSP0.PrepdataNoclip.1.puma.119.gg.1pol.asc']
